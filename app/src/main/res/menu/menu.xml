@@ -56,6 +56,7 @@
             <item
 
                 android:title="Log Out"
+                android:onClick="logout"
                 android:icon="@drawable/ic_sentiment_dissatisfied_black_24dp"
                 />
         </menu>

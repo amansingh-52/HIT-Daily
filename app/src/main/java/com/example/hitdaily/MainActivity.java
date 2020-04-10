@@ -12,7 +12,10 @@ import java.util.Calendar;
 import java.util.Objects;
 
 import com.example.myapplication.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
@@ -20,12 +23,11 @@ import com.google.firebase.database.*;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
@@ -48,19 +50,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String teacher;
     String room_no;
     String category;
+    String email;
+    String password;
+    String name;
+    Users currentUser;
+    ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-            setContentView(R.layout.signup);
+        if(firebaseUser == null) {
+            launchLogIN();
+        }
+        else {
+           launch();
+        }
+    }
 
+    public void launchLogIN(){
+        setContentView(R.layout.signin);
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
     }
 
     public void createUser(View view){
         EditText emailID = findViewById(R.id.emailEditText);
         EditText password1 = findViewById(R.id.password);
         EditText password2 = findViewById(R.id.passwordReCheck);
+        EditText name = findViewById(R.id.takeNameEditText);
 
         if(emailID.getText().toString().equals("")){
             Toast.makeText(this,"email ID cannot be blank",Toast.LENGTH_LONG).show();
@@ -86,6 +104,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(password1.getText().toString().equals(password2.getText().toString())){
             Toast.makeText(this, "Welcome", Toast.LENGTH_SHORT).show();
             firebaseAuth.createUserWithEmailAndPassword(emailID.getText().toString(),password1.getText().toString());
+            email=emailID.getText().toString();
+            password = password1.getText().toString();
+            this.name = name.getText().toString();
             setContentView(R.layout.pref);
             setSpinner();
         }
@@ -95,6 +116,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             password2.setText("");
         }
     }
+
+    public void logout(MenuItem menuItem){
+        firebaseAuth.signOut();
+        launchLogIN();
+    }
+
+    public void login(View view){
+        EditText emailID = findViewById(R.id.emailSignIn);
+        EditText password1 = findViewById(R.id.passwordSignIn);
+        if(emailID.getText().toString().equals("")){
+            Toast.makeText(this,"email ID cannot be blank",Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(!emailID.getText().toString().contains("@")&&!(emailID.getText().toString().contains(".com")||emailID.getText().toString().contains(".in")
+                ||emailID.getText().toString().contains(".edu"))){
+            Toast.makeText(this,"Please enter a valid e-mail id",Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(password1.getText().toString().equals("")){
+            Toast.makeText(this,"Password cannot be blank",Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(password1.getText().toString().length()<=5){
+            Toast.makeText(this,"Please enter at least 6 digit password",Toast.LENGTH_LONG).show();
+            return;
+        }
+        progressBar.setVisibility(View.VISIBLE);
+        firebaseAuth.signInWithEmailAndPassword(emailID.getText().toString(),password1.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isComplete()) {
+                    progressBar.setVisibility(View.GONE);
+                    if (task.isSuccessful()) {
+                        launch();
+                        return;
+                    }
+                    else
+                    {
+                        Toast.makeText(MainActivity.this,"Login not successful\nPlease check email and password",Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+    }
+
     public void display(View view){
         Toast.makeText(this,firebaseAuth.getUid(),Toast.LENGTH_LONG).show();
     }
@@ -142,9 +208,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.syncState();
     }
 
+    public void uploadData(Users users){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("User").child(firebaseUser.getUid()).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(MainActivity.this,"All set !",Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     public void mainScreen (MenuItem menuItem){
         launch();
         setUpHomeScreen();
+    }
+
+    public void setUpUserByOnlineData(){
+      //  firebaseAuth.ge
+    }
+
+    public void signUp(View view){
+        setContentView(R.layout.signup);
+    }
+
+    public void signIn(View view){
+        setContentView(R.layout.signin);
     }
     //launches main screen
     void launch() {
@@ -173,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void toHome(View view){
        launch();
        setUpHomeScreen();
+       uploadData(currentUser);
     }
     public void setUpHomeScreen() {
         final TextView time = findViewById(R.id.timeTextView);
@@ -265,6 +354,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final Spinner spinner2 = findViewById(R.id.sectionSpinner);
         final Spinner spinner3 = findViewById(R.id.yearSpinner);
         final Spinner spinner4 = findViewById(R.id.groupSpinner);
+        final Users users = new Users();
         ArrayAdapter<String> aa1 = new ArrayAdapter<>(MainActivity.this,R.layout.support_simple_spinner_dropdown_item,branch);
         ArrayAdapter<String> aa2 = new ArrayAdapter<>(MainActivity.this,R.layout.support_simple_spinner_dropdown_item,sec);
         ArrayAdapter<String> aa3 = new ArrayAdapter<>(MainActivity.this,R.layout.support_simple_spinner_dropdown_item,year);
@@ -276,11 +366,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                users.dept =  (String)parent.getSelectedItem();
                 dept = (String)parent.getSelectedItem();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                users.dept =  (String)parent.getSelectedItem();
                 dept = (String)parent.getItemAtPosition(0);
             }
         });
@@ -288,11 +380,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 section = (String)parent.getSelectedItem();
+                users.section = section;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 section = (String)parent.getItemAtPosition(0);
+                users.section=section;
 
             }
         });
@@ -300,11 +394,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 yearString = (String)parent.getSelectedItem();
+                users.year=yearString;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 yearString = (String)parent.getItemAtPosition(0);
+                users.year=yearString;
 
             }
         });
@@ -312,13 +408,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 groupString = (String)parent.getSelectedItem();
+                users.group=groupString;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 groupString = (String)parent.getItemAtPosition(0);
+                users.group=groupString;
             }
         });
+        users.name = name;
+        users.password = password;
+        users.email = email;
+        currentUser = users;
 
     }
     class SetTime{
