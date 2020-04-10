@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/main"
+        android:title="Menu">
+        <menu>
+            <item
+                android:id="@+id/now"
+                android:icon="@drawable/ic_today_black_24dp"
+                android:title="Now"
+                android:onClick="mainScreen"
+                />
+            <item
+            android:id="@+id/today"
+            android:icon="@drawable/ic_today_black_24dp"
+            android:title="Today (Coming Soon)"
+            />
+            <item
+                android:id="@+id/week"
+                android:icon="@drawable/ic_today_black_24dp"
+                android:title="Week (Coming Soon)"
+                />
+
+        </menu>
+    </item>
+    <item
+        android:id="@+id/college"
+        android:title="College">
+        <menu>
+            <item
+                android:id="@+id/noticeSection"
+                android:icon="@drawable/ic_notifications_black_24dp"
+                android:title="Notice"
+                android:onClick="noticeSite"
+                />
+            <item
+                android:id="@+id/collegeSite"
+                android:icon="@drawable/ic_assessment_black_24dp"
+                android:title="Examination"
+                android:onClick="examinationSite"
+                />
+            <item
+                android:icon="@drawable/ic_web_black_24dp"
+                android:title="Go to College website"
+                android:onClick="collegeSite"
+                />
+        </menu>
+    </item>
+    <item android:title="Account Management" >
+        <menu>
+            <item
+                android:icon="@drawable/ic_edit_black_24dp"
+                android:title="Edit preference"
+                android:onClick="toLogIN"
+                />
+            <item
+
+                android:title="Log Out"
+                android:icon="@drawable/ic_sentiment_dissatisfied_black_24dp"
+                />
+        </menu>
+    </item>
+
+    <item android:title="Help and Support" >
+    <menu>
+        <item
+            android:id="@+id/home2"
+            android:icon="@drawable/ic_live_help_black_24dp"
+            android:title="Help"
+            android:onClick="help"
+            />
+        <item
+            android:id="@+id/other2"
+            android:icon="@drawable/ic_email_black_24dp"
+            android:title="Contact" />
+    </menu>
+</item>
+</menu>

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "900063166007",
+    "firebase_url": "https://hitk-daily.firebaseio.com",
+    "project_id": "hitk-daily",
+    "storage_bucket": "hitk-daily.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:900063166007:android:146f71a183ab0faa4309b2",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "900063166007-qvvbtihtgvddmu3j34sjummba72a7s67.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5zpsHf5u725Pt0YeeXnbL4HxyEDUugYc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "900063166007-qvvbtihtgvddmu3j34sjummba72a7s67.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

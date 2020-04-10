@@ -1,0 +1,503 @@
+package com.example.hitdaily;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Objects;
+
+import com.example.myapplication.R;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.*;
+
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Spinner;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+    FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
+    DrawerLayout drawerLayout;
+    ActionBarDrawerToggle actionBarDrawerToggle;
+    Toolbar toolbar;
+    NavigationView navigationView;
+    SetTime setTime = new SetTime();
+    String[] year ={"1st"/*,"2nd","3rd","4th"*/};
+    String[] branch = {/*"CSE",*/ "ECE",/*"IT","CE","ME",*/"ChE"/*,"EE","AEIE","BT"*/};
+    String[] sec = {"N/A","A","B","C"};
+    String[] group = {"A","B"};
+    String dept="Hello",section="World",yearString = "year", groupString = "group";
+    String subject;
+    String teacher;
+    String room_no;
+    String category;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+            setContentView(R.layout.signup);
+
+    }
+
+    public void createUser(View view){
+        EditText emailID = findViewById(R.id.emailEditText);
+        EditText password1 = findViewById(R.id.password);
+        EditText password2 = findViewById(R.id.passwordReCheck);
+
+        if(emailID.getText().toString().equals("")){
+            Toast.makeText(this,"email ID cannot be blank",Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(!emailID.getText().toString().contains("@")&&!(emailID.getText().toString().contains(".com")||emailID.getText().toString().contains(".in")
+                ||emailID.getText().toString().contains(".edu"))){
+            Toast.makeText(this,"Please enter a valid e-mail id",Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(password1.getText().toString().equals("")){
+            Toast.makeText(this,"Password cannot be blank",Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(password1.getText().toString().length()<=5){
+            Toast.makeText(this,"Please enter at least 6 digit password",Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(password2.getText().toString().equals("")){
+            Toast.makeText(this,"Password didn't match\nPlease re enter",Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(password1.getText().toString().equals(password2.getText().toString())){
+            Toast.makeText(this, "Welcome", Toast.LENGTH_SHORT).show();
+            firebaseAuth.createUserWithEmailAndPassword(emailID.getText().toString(),password1.getText().toString());
+            setContentView(R.layout.pref);
+            setSpinner();
+        }
+        else{
+            Toast.makeText(this,"Password didn't match\nPlease re enter",Toast.LENGTH_LONG).show();
+            password1.setText("");
+            password2.setText("");
+        }
+    }
+    public void display(View view){
+        Toast.makeText(this,firebaseAuth.getUid(),Toast.LENGTH_LONG).show();
+    }
+    //Has to be implemented for navigation view
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+            return true;
+        }
+
+        public void collegeSite(MenuItem menuItem){
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.heritageit.edu/"));
+            startActivity(intent);
+        }
+
+    public void noticeSite(MenuItem menuItem){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.heritageit.edu/Notice.aspx"));
+        startActivity(intent);
+    }
+
+    public void examinationSite(MenuItem menuItem){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.heritageit.edu/ExamCell.aspx"));
+        startActivity(intent);
+    }
+
+    public void toEmail(View view){
+        Intent intent = new Intent(Intent.ACTION_SENDTO,Uri.fromParts("mailto","amansingh8066@gmail.com",null));
+        intent.putExtra(Intent.EXTRA_SUBJECT,"Report HIT Daily");
+        startActivity(Intent.createChooser(intent,"Choose an email client :"));
+    }
+
+    public void toGitHub(View view){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://github.com/amansingh-52/"));
+        startActivity(intent);
+    }
+    public void help(MenuItem menuItem){
+        setContentView(R.layout.mainforhelp);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        drawerLayout = findViewById(R.id.drawer);
+        navigationView = findViewById(R.id.navigation_view);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        actionBarDrawerToggle.syncState();
+    }
+
+    public void mainScreen (MenuItem menuItem){
+        launch();
+        setUpHomeScreen();
+    }
+    //launches main screen
+    void launch() {
+        setContentView(R.layout.activity_main);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        drawerLayout = findViewById(R.id.drawer);
+        navigationView = findViewById(R.id.navigation_view);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        actionBarDrawerToggle.syncState();
+
+    }
+    //Function for on click Log In from the menu drawer.
+    public void toLogIN(MenuItem item){
+
+        setContentView(R.layout.pref);
+        setSpinner();
+
+    }
+    public void toEmailLogIn(MenuItem menuItem){
+        setContentView(R.layout.signup);
+    }
+    //Function for on click save button
+    public void toHome(View view){
+       launch();
+       setUpHomeScreen();
+    }
+    public void setUpHomeScreen() {
+        final TextView time = findViewById(R.id.timeTextView);
+        final GenerateId generateId = new GenerateId();
+        final TextView classTextView = (TextView) findViewById(R.id.classNameText);
+        GenerateClassId generateClassId = new GenerateClassId(dept, section, yearString, groupString);
+        classTextView.setText(dept + " -" + section + " \"" + groupString + "\" (" + yearString + ")");
+        time.setText(setTime.generateDAndT());
+        final TextView textView1 = findViewById(R.id.classNameText);
+        final TextView timeLeftTextView = (TextView) findViewById(R.id.timeLeftTextView);
+        long deptId = generateClassId.dept(dept);
+        long sectionId = generateClassId.section(section);
+        long yearId = generateClassId.year(yearString);
+        long groupId = generateClassId.group(groupString);
+        final long timeId = generateId.generate();
+        final String id = Long.toString(yearId) + Long.toString(deptId) + Long.toString(sectionId) + Long.toString(groupId) + Long.toString(timeId);
+        TextView classID = (TextView) findViewById(R.id.classId);
+        classID.setText("@classID\n" + id);
+        DatabaseReference mDataBase = FirebaseDatabase.getInstance().getReference();
+        final TimeLeftCalculation timeLeftCalculation = new TimeLeftCalculation();
+
+        final TextView currentSubject = (TextView) findViewById(R.id.currentSubject);
+        final TextView currentTeacher = (TextView) findViewById(R.id.currentTeacher);
+        final TextView currentRoom = (TextView) findViewById(R.id.currentRoom_no);
+        final TextView currentCategory = (TextView) findViewById(R.id.currentCategory);
+        timeLeftTextView.setText(timeLeftCalculation.timeLeft());
+        try {
+            DatabaseReference databaseReference = mDataBase.child("classes").child(id);
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    try {
+                        subject = Objects.requireNonNull(dataSnapshot.child("subject").getValue()).toString();
+                        currentSubject.setText(subject);
+                    } catch (NullPointerException e) {
+                        currentSubject.setText("Not Found :(");
+                    }
+                    try {
+                        teacher = Objects.requireNonNull(dataSnapshot.child("teacher").getValue()).toString();
+                        currentTeacher.setText(teacher);
+                    } catch (NullPointerException e) {
+                        currentTeacher.setText("Please contact at amansingh8066@gmail.com\nKindly send your class routine");
+                    }
+                    try {
+                        room_no = Objects.requireNonNull(dataSnapshot.child("room_no").getValue()).toString();
+                        currentRoom.setText(room_no);
+                    } catch (NullPointerException e) {
+                        currentRoom.setText("");
+                    }
+                    try {
+                        category = Objects.requireNonNull(dataSnapshot.child("category").getValue()).toString();
+                        currentCategory.setText(category);
+                    } catch (NullPointerException e) {
+                        currentCategory.setText("");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    textView1.setText("Error");
+                }
+            });
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                while (!isInterrupted()) {
+                    try {
+                        Thread.sleep(50);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                timeLeftTextView.setText(timeLeftCalculation.timeLeft());
+                                time.setText(setTime.getWeek() + " " + setTime.generateDAndT());
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        thread.start();
+
+    }
+    public void setSpinner(){
+        final Spinner spinner1 = findViewById(R.id.deptSpinner);
+        final Spinner spinner2 = findViewById(R.id.sectionSpinner);
+        final Spinner spinner3 = findViewById(R.id.yearSpinner);
+        final Spinner spinner4 = findViewById(R.id.groupSpinner);
+        ArrayAdapter<String> aa1 = new ArrayAdapter<>(MainActivity.this,R.layout.support_simple_spinner_dropdown_item,branch);
+        ArrayAdapter<String> aa2 = new ArrayAdapter<>(MainActivity.this,R.layout.support_simple_spinner_dropdown_item,sec);
+        ArrayAdapter<String> aa3 = new ArrayAdapter<>(MainActivity.this,R.layout.support_simple_spinner_dropdown_item,year);
+        ArrayAdapter<String> aa4 = new ArrayAdapter<>(MainActivity.this,R.layout.support_simple_spinner_dropdown_item,group);
+        spinner1.setAdapter(aa1);
+        spinner2.setAdapter(aa2);
+        spinner3.setAdapter(aa3);
+        spinner4.setAdapter(aa4);
+        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                dept = (String)parent.getSelectedItem();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                dept = (String)parent.getItemAtPosition(0);
+            }
+        });
+        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                section = (String)parent.getSelectedItem();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                section = (String)parent.getItemAtPosition(0);
+
+            }
+        });
+        spinner3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                yearString = (String)parent.getSelectedItem();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                yearString = (String)parent.getItemAtPosition(0);
+
+            }
+        });
+        spinner4.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                groupString = (String)parent.getSelectedItem();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                groupString = (String)parent.getItemAtPosition(0);
+            }
+        });
+
+    }
+    class SetTime{
+        String currentTime(){
+            long time = System.currentTimeMillis();
+            DateFormat formatter = new SimpleDateFormat("hh:mm:ss aa");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time);
+            return (formatter.format(calendar.getTime()));
+        }
+        String date(){
+            long time = System.currentTimeMillis();
+            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time);
+            return (formatter.format(calendar.getTime()));
+        }
+        String getWeek(){
+            long time = System.currentTimeMillis();
+            DateFormat formatter = new SimpleDateFormat("EEE");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time);
+            return (formatter.format(calendar.getTime()));
+        }
+        String hour(){
+            long time = System.currentTimeMillis();
+            DateFormat formatter = new SimpleDateFormat("HH");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time);
+            return (formatter.format(calendar.getTime()));
+        }
+        String minute(){
+            long time = System.currentTimeMillis();
+            DateFormat formatter = new SimpleDateFormat("mm");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time);
+            return (formatter.format(calendar.getTime()));
+        }
+        String generateDAndT(){
+            return (date()+"\t"+currentTime());
+        }
+    }
+    class GenerateClassId {
+        GenerateClassId(String dept,String section, String year, String group){
+            dept(dept);
+            section(section);
+            year(year);
+            group(group);
+        }
+        int dept(String dept){
+            if(dept.equals("CSE"))
+                return 10;
+            if(dept.equals("ECE"))
+                return 11;
+            if(dept.equals("IT"))
+                return 12;
+            if(dept.equals("CE"))
+                return 13;
+            if(dept.equals("ME"))
+                return 14;
+            if(dept.equals("ChE"))
+                return 15;
+            if(dept.equals("EE"))
+                return 16;
+            if(dept.equals("AEIE"))
+                return 17;
+            if(dept.equals("BT"))
+                return 18;
+            return 20;
+        }
+        int section(String sec){
+            if(sec.equals("N/A"))
+                return 10;
+            if(sec.equals("A"))
+                return 11;
+            if(sec.equals("B"))
+                return 12;
+            if(sec.equals("C"))
+                return 13;
+
+            return 20;
+        }
+        int year(String yearString){
+            if(yearString.equals("1st")){
+                return 10;
+            }
+            if(yearString.equals("2nd")){
+                return 11;
+            }
+            if(yearString.equals("3rd")){
+                return 12;
+            }
+            if(yearString.equals("4th")){
+                return 13;
+            }
+            return 20;
+        }
+        int group(String groupString){
+            if(groupString.equals("A")){
+                return 10;
+            }
+            if(groupString.equals("B"))
+                return 11;
+            return 20;
+        }
+    }
+    class GenerateId{
+        long time = System.currentTimeMillis();
+        int dayID(){
+            DateFormat formatter = new SimpleDateFormat("EEE");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time);
+
+            if(formatter.format(calendar.getTime()).toString().equals("Sun")){
+                return 10;
+            }if(formatter.format(calendar.getTime()).toString().equals("Mon")){
+                return 11;
+            }if(formatter.format(calendar.getTime()).toString().equals("Tue")){
+                return 12;
+            }if(formatter.format(calendar.getTime()).toString().equals("Wed")){
+                return 13;
+            }if(formatter.format(calendar.getTime()).toString().equals("Thu")){
+                return 14;
+            }if(formatter.format(calendar.getTime()).toString().equals("Fri")){
+                return 15;
+            }if(formatter.format(calendar.getTime()).toString().equals("Sat")){
+                return 16;
+            }
+            return 20;
+        }
+        int time(){
+            DateFormat formatterHour = new SimpleDateFormat("HH");
+            Calendar calendarHour = Calendar.getInstance();
+            calendarHour.setTimeInMillis(time);
+            DateFormat formatterMinute = new SimpleDateFormat("mm");
+            Calendar calendarMinute = Calendar.getInstance();
+            calendarMinute.setTimeInMillis(time);
+            int hour = Integer.parseInt(formatterHour.format(calendarHour.getTime()));
+            int minute = Integer.parseInt(formatterMinute.format(calendarMinute.getTime()));
+            int time = ((100*hour)+minute);
+            if(time>=900&&time<955){
+                return 10;
+            }if(time>=955&&time<1050){
+                return 11;
+            }if(time>=1050&&time<1145){
+                return 12;
+            }if(time>=1145&&time<1225){
+                return 13;
+            }if(time>=1225&&time<1320){
+                return 14;
+            }if(time>=1320&&time<1415){
+                return 15;
+            }if(time>=1415&&time<1510){
+                return 16;
+            }if(time>=1510&&time<1605){
+                return 17;
+            }if(time>=1605&&time<1700){
+                return 18;
+            }if(time>=1700&&time<1755){
+                return 19;
+            }
+            return 20;
+        }
+        int generate(){
+            return (dayID()*100)+time();
+        }
+    }
+
+    class TimeLeftCalculation {
+        GenerateId generateId = new GenerateId();
+        SetTime setTime = new SetTime();
+
+        String timeLeft() {
+
+            if ((true)) {
+
+            }
+            return null;
+        }
+    }
+
+}
