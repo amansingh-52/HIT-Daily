@@ -69,10 +69,6 @@
             android:title="Help"
             android:onClick="help"
             />
-        <item
-            android:id="@+id/other2"
-            android:icon="@drawable/ic_email_black_24dp"
-            android:title="Contact" />
     </menu>
 </item>
 </menu>

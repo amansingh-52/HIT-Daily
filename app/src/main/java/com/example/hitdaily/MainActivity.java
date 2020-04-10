@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void toGitHub(View view){
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://github.com/amansingh-52/"));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://github.com/amansingh-52/HIT-Daily"));
         startActivity(intent);
     }
     public void help(MenuItem menuItem){
