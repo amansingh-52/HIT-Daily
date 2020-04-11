@@ -145,5 +145,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timeLeftTextView" />
 
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Small"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeLeftTextView" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

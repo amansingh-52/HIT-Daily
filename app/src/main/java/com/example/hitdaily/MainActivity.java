@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         EditText password1 = findViewById(R.id.password);
         EditText password2 = findViewById(R.id.passwordReCheck);
         EditText name = findViewById(R.id.takeNameEditText);
+        final Information information = new Information();
 
         if(emailID.getText().toString().equals("")){
             Toast.makeText(this,"email ID cannot be blank",Toast.LENGTH_LONG).show();
@@ -102,11 +103,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
         }
         if(password1.getText().toString().equals(password2.getText().toString())){
+
+            information.name=name.getText().toString();
+            information.email=emailID.getText().toString();
+            information.password=password1.getText().toString();
+
             Toast.makeText(this, "Welcome", Toast.LENGTH_SHORT).show();
-            firebaseAuth.createUserWithEmailAndPassword(emailID.getText().toString(),password1.getText().toString());
-            email=emailID.getText().toString();
-            password = password1.getText().toString();
-            this.name = name.getText().toString();
+            firebaseAuth.createUserWithEmailAndPassword(emailID.getText().toString(),password1.getText().toString())
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()){
+                                firebaseUser = firebaseAuth.getCurrentUser();
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                                databaseReference.child("User").child(firebaseUser.getUid()).child("info").setValue(information).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Toast.makeText(MainActivity.this,"All set !",Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }
+                    });
             setContentView(R.layout.pref);
             setSpinner();
         }
@@ -209,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void uploadData(Users users){
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("User").child(firebaseUser.getUid()).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
+        databaseReference.child("User").child(firebaseUser.getUid()).child("pref").setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(MainActivity.this,"All set !",Toast.LENGTH_LONG).show();
@@ -220,10 +238,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void mainScreen (MenuItem menuItem){
         launch();
         setUpHomeScreen();
-    }
-
-    public void setUpUserByOnlineData(){
-      //  firebaseAuth.ge
     }
 
     public void signUp(View view){
@@ -264,6 +278,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        uploadData(currentUser);
     }
     public void setUpHomeScreen() {
+        final ProgressBar progressBar1 = findViewById(R.id.progressBar2);
+        progressBar1.setVisibility(View.VISIBLE);
         final TextView textView1 = findViewById(R.id.classNameText);
         final TextView timeLeftTextView = (TextView) findViewById(R.id.timeLeftTextView);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -274,35 +290,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final TextView udiTextView = (TextView) findViewById(R.id.uidTextView);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         final DatabaseReference mdatabaseReference = databaseReference.child("User").child(firebaseUser.getUid());
-        databaseReference.child("User").child(firebaseUser.getUid()).child("status").setValue("Login").addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(MainActivity.this,"Completed",Toast.LENGTH_LONG).show();
-            }
-        });
         mdatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
-                    dept = dataSnapshot.child("dept").getValue().toString();
+                    dept = dataSnapshot.child("pref").child("dept").getValue().toString();
                 }catch (NullPointerException e){
                     Toast.makeText(MainActivity.this,"Dept error",Toast.LENGTH_LONG).show();
                 }
                 try {
-                    section = dataSnapshot.child("section").getValue().toString();
+                    section = dataSnapshot.child("pref").child("section").getValue().toString();
                 }catch (NullPointerException e){
                     Toast.makeText(MainActivity.this,"Section error",Toast.LENGTH_LONG).show();
                 }
                 try{
-                    yearString = dataSnapshot.child("year").getValue().toString();
+                    yearString = dataSnapshot.child("pref").child("year").getValue().toString();
                 }catch (NullPointerException e){
                     Toast.makeText(MainActivity.this,"Year error",Toast.LENGTH_LONG).show();
                 }
                 try {
-                    groupString = dataSnapshot.child("group").getValue().toString();
+                    groupString = dataSnapshot.child("pref").child("group").getValue().toString();
                 }catch (NullPointerException e){
                     Toast.makeText(MainActivity.this,"Group error",Toast.LENGTH_LONG).show();
                 }
+                TextView userNameTextView = findViewById(R.id.userNameTextView);
+                try {
+
+                    userNameTextView.setText( dataSnapshot.child("info").child("name").getValue().toString());
+
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                }
+                TextView userEmailTextView = findViewById(R.id.userEmailTextView);
+                userEmailTextView.setText(firebaseUser.getEmail());
+                progressBar1.setVisibility(View.GONE);
                 TextView classID = (TextView) findViewById(R.id.classId);
                 GenerateClassId generateClassId = new GenerateClassId(dept, section, yearString, groupString);
                 classTextView.setText(dept + " -" + section + " \"" + groupString + "\" (" + yearString + ")");
@@ -458,9 +479,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 users.group=groupString;
             }
         });
-        users.name = name;
-        users.password = password;
-        users.email = email;
+
         currentUser = users;
 
     }
