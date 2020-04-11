@@ -95,13 +95,10 @@
     <ProgressBar
         android:id="@+id/progressBar"
         style="@android:style/Widget.Holo.ProgressBar.Large"
-        android:layout_width="107dp"
-        android:layout_height="103dp"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="124dp"
+        android:layout_width="49dp"
+        android:layout_height="51dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/emailSignIn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

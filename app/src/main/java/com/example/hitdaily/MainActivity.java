@@ -123,8 +123,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void login(View view){
-        EditText emailID = findViewById(R.id.emailSignIn);
-        EditText password1 = findViewById(R.id.passwordSignIn);
+      final   EditText emailID = findViewById(R.id.emailSignIn);
+       final EditText password1 = findViewById(R.id.passwordSignIn);
         if(emailID.getText().toString().equals("")){
             Toast.makeText(this,"email ID cannot be blank",Toast.LENGTH_LONG).show();
             return;
@@ -150,7 +150,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     progressBar.setVisibility(View.GONE);
                     if (task.isSuccessful()) {
                         launch();
-                        return;
                     }
                     else
                     {
@@ -245,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
+        setUpHomeScreen();
 
     }
     //Function for on click Log In from the menu drawer.
@@ -264,91 +264,132 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        uploadData(currentUser);
     }
     public void setUpHomeScreen() {
+        final TextView textView1 = findViewById(R.id.classNameText);
+        final TextView timeLeftTextView = (TextView) findViewById(R.id.timeLeftTextView);
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
         final TextView time = findViewById(R.id.timeTextView);
         final GenerateId generateId = new GenerateId();
         final TextView classTextView = (TextView) findViewById(R.id.classNameText);
-        GenerateClassId generateClassId = new GenerateClassId(dept, section, yearString, groupString);
-        classTextView.setText(dept + " -" + section + " \"" + groupString + "\" (" + yearString + ")");
-        time.setText(setTime.generateDAndT());
-        final TextView textView1 = findViewById(R.id.classNameText);
-        final TextView timeLeftTextView = (TextView) findViewById(R.id.timeLeftTextView);
-        long deptId = generateClassId.dept(dept);
-        long sectionId = generateClassId.section(section);
-        long yearId = generateClassId.year(yearString);
-        long groupId = generateClassId.group(groupString);
-        final long timeId = generateId.generate();
-        final String id = Long.toString(yearId) + Long.toString(deptId) + Long.toString(sectionId) + Long.toString(groupId) + Long.toString(timeId);
-        TextView classID = (TextView) findViewById(R.id.classId);
-        classID.setText("@classID\n" + id);
-        DatabaseReference mDataBase = FirebaseDatabase.getInstance().getReference();
-        final TimeLeftCalculation timeLeftCalculation = new TimeLeftCalculation();
-
-        final TextView currentSubject = (TextView) findViewById(R.id.currentSubject);
-        final TextView currentTeacher = (TextView) findViewById(R.id.currentTeacher);
-        final TextView currentRoom = (TextView) findViewById(R.id.currentRoom_no);
-        final TextView currentCategory = (TextView) findViewById(R.id.currentCategory);
-        timeLeftTextView.setText(timeLeftCalculation.timeLeft());
-        try {
-            DatabaseReference databaseReference = mDataBase.child("classes").child(id);
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    try {
-                        subject = Objects.requireNonNull(dataSnapshot.child("subject").getValue()).toString();
-                        currentSubject.setText(subject);
-                    } catch (NullPointerException e) {
-                        currentSubject.setText("Not Found :(");
-                    }
-                    try {
-                        teacher = Objects.requireNonNull(dataSnapshot.child("teacher").getValue()).toString();
-                        currentTeacher.setText(teacher);
-                    } catch (NullPointerException e) {
-                        currentTeacher.setText("Please contact at amansingh8066@gmail.com\nKindly send your class routine");
-                    }
-                    try {
-                        room_no = Objects.requireNonNull(dataSnapshot.child("room_no").getValue()).toString();
-                        currentRoom.setText(room_no);
-                    } catch (NullPointerException e) {
-                        currentRoom.setText("");
-                    }
-                    try {
-                        category = Objects.requireNonNull(dataSnapshot.child("category").getValue()).toString();
-                        currentCategory.setText(category);
-                    } catch (NullPointerException e) {
-                        currentCategory.setText("");
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    textView1.setText("Error");
-                }
-            });
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        Thread thread = new Thread() {
+        final TextView udiTextView = (TextView) findViewById(R.id.uidTextView);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference mdatabaseReference = databaseReference.child("User").child(firebaseUser.getUid());
+        databaseReference.child("User").child(firebaseUser.getUid()).child("status").setValue("Login").addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void run() {
-                while (!isInterrupted()) {
-                    try {
-                        Thread.sleep(50);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                timeLeftTextView.setText(timeLeftCalculation.timeLeft());
-                                time.setText(setTime.getWeek() + " " + setTime.generateDAndT());
-                            }
-                        });
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(MainActivity.this,"Completed",Toast.LENGTH_LONG).show();
             }
-        };
-        thread.start();
+        });
+        mdatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    dept = dataSnapshot.child("dept").getValue().toString();
+                }catch (NullPointerException e){
+                    Toast.makeText(MainActivity.this,"Dept error",Toast.LENGTH_LONG).show();
+                }
+                try {
+                    section = dataSnapshot.child("section").getValue().toString();
+                }catch (NullPointerException e){
+                    Toast.makeText(MainActivity.this,"Section error",Toast.LENGTH_LONG).show();
+                }
+                try{
+                    yearString = dataSnapshot.child("year").getValue().toString();
+                }catch (NullPointerException e){
+                    Toast.makeText(MainActivity.this,"Year error",Toast.LENGTH_LONG).show();
+                }
+                try {
+                    groupString = dataSnapshot.child("group").getValue().toString();
+                }catch (NullPointerException e){
+                    Toast.makeText(MainActivity.this,"Group error",Toast.LENGTH_LONG).show();
+                }
+                TextView classID = (TextView) findViewById(R.id.classId);
+                GenerateClassId generateClassId = new GenerateClassId(dept, section, yearString, groupString);
+                classTextView.setText(dept + " -" + section + " \"" + groupString + "\" (" + yearString + ")");
+                long deptId = generateClassId.dept(dept);
+                long sectionId = generateClassId.section(section);
+                long yearId = generateClassId.year(yearString);
+                long groupId = generateClassId.group(groupString);
+                final long timeId = generateId.generate();
+                final String id = Long.toString(yearId) + Long.toString(deptId) + Long.toString(sectionId) + Long.toString(groupId) + Long.toString(timeId);
+                classID.setText("@classID\n" + id);
+                final TimeLeftCalculation timeLeftCalculation = new TimeLeftCalculation();
+                final TextView currentSubject = (TextView) findViewById(R.id.currentSubject);
+                final TextView currentTeacher = (TextView) findViewById(R.id.currentTeacher);
+                final TextView currentRoom = (TextView) findViewById(R.id.currentRoom_no);
+                final TextView currentCategory = (TextView) findViewById(R.id.currentCategory);
+                udiTextView.setText(firebaseUser.getUid());
+                timeLeftTextView.setText(timeLeftCalculation.timeLeft());
+                try {
+                    DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
+                    dbref = dbref.child("classes").child(id);
+                    dbref.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            try {
+                                subject = Objects.requireNonNull(dataSnapshot.child("subject").getValue()).toString();
+                                currentSubject.setText(subject);
+                            } catch (NullPointerException e) {
+                                currentSubject.setText("Not Found :(");
+                            }
+                            try {
+                                teacher = Objects.requireNonNull(dataSnapshot.child("teacher").getValue()).toString();
+                                currentTeacher.setText(teacher);
+                            } catch (NullPointerException e) {
+                                currentTeacher.setText("Please contact at amansingh8066@gmail.com\nKindly send your class routine");
+                            }
+                            try {
+                                room_no = Objects.requireNonNull(dataSnapshot.child("room_no").getValue()).toString();
+                                currentRoom.setText(room_no);
+                            } catch (NullPointerException e) {
+                                currentRoom.setText("");
+                            }
+                            try {
+                                category = Objects.requireNonNull(dataSnapshot.child("category").getValue()).toString();
+                                currentCategory.setText(category);
+                            } catch (NullPointerException e) {
+                                currentCategory.setText("");
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            textView1.setText("Error");
+                        }
+                    });
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                time.setText(setTime.generateDAndT());
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
+                        while (!isInterrupted()) {
+                            try {
+                                Thread.sleep(50);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        timeLeftTextView.setText(timeLeftCalculation.timeLeft());
+                                        time.setText(setTime.getWeek() + " " + setTime.generateDAndT());
 
+                                    }
+                                });
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                };
+                thread.start();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
+
+
     public void setSpinner(){
         final Spinner spinner1 = findViewById(R.id.deptSpinner);
         final Spinner spinner2 = findViewById(R.id.sectionSpinner);
