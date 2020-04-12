@@ -8,12 +8,12 @@
         android:label="HIT Daily"
         android:roundIcon="@mipmap/icon"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        >
-        <activity android:name="com.example.hitdaily.MainActivity"
-                  android:screenOrientation="portrait"
-                  android:theme="@style/AppTheme2"
-            >
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:name="com.example.hitdaily.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

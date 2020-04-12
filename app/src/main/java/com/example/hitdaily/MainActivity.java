@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+
         if(firebaseUser == null) {
             launchLogIN();
         }
@@ -340,6 +341,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 final TextView currentTeacher = (TextView) findViewById(R.id.currentTeacher);
                 final TextView currentRoom = (TextView) findViewById(R.id.currentRoom_no);
                 final TextView currentCategory = (TextView) findViewById(R.id.currentCategory);
+                final TextView nowTextView = (TextView) findViewById(R.id.nowText);
                 timeLeftTextView.setText(timeLeftCalculation.timeLeft());
                 try {
                     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
@@ -352,10 +354,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 currentSubject.setText(subject);
                             } catch (NullPointerException e) {
                                 if(generateId.dayID() == 10){
-                                    currentSubject.setText("SUNDAY");
+                                    currentSubject.setText("");
+                                    ConstraintLayout now = findViewById(R.id.nowlayout);
+                                    now.setBackgroundResource(R.drawable.sunday);
+                                    nowTextView.setText("");
                                 }
                                 else if(generateId.dayID() == 16){
-                                    currentSubject.setText("SATURDAY");
+                                    currentSubject.setText("");
+                                    ConstraintLayout now = findViewById(R.id.nowlayout);
+                                    now.setBackgroundResource(R.drawable.saturday);
+                                    nowTextView.setText("");
                                 }
                                 else
                                 {
@@ -374,10 +382,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 currentTeacher.setText(teacher);
                             } catch (NullPointerException e) {
                                 if(generateId.dayID() == 10){
-                                    currentTeacher.setText("NO UPCOMING CLASSES");
+                                    currentTeacher.setText("");
                                 }
                                 else if(generateId.dayID() == 16){
-                                    currentTeacher.setText("NO UPCOMING CLASSES");
+                                    currentTeacher.setText("");
                                 }
                                 else
                                 {
