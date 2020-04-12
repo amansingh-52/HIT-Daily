@@ -356,12 +356,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 if(generateId.dayID() == 10){
                                     currentSubject.setText("");
                                     ConstraintLayout now = findViewById(R.id.nowlayout);
+                                    ConstraintLayout next = findViewById(R.id.nextLayout);
+                                    next.setBackgroundResource(R.drawable.sundaysupport);
                                     now.setBackgroundResource(R.drawable.sunday);
                                     nowTextView.setText("");
                                 }
                                 else if(generateId.dayID() == 16){
                                     currentSubject.setText("");
                                     ConstraintLayout now = findViewById(R.id.nowlayout);
+                                    ConstraintLayout next = findViewById(R.id.nextLayout);
+                                    next.setBackgroundResource(R.drawable.sundaysupport);
                                     now.setBackgroundResource(R.drawable.saturday);
                                     nowTextView.setText("");
                                 }
