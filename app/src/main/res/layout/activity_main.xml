@@ -9,14 +9,45 @@
     tools:context="com.example.hitdaily.MainActivity"
     >
 
-    <include
-        layout="@layout/drawer_toolbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <include
-        layout="@layout/content_main"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp" />
+    <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent">
+
+        <include
+            layout="@layout/content_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="56sp"
+
+            android:alpha=".5" />
+
+        <include
+            android:id="@+id/nowlayout"
+            layout="@layout/nowview"
+            android:layout_width="334dp"
+            android:layout_height="233dp"
+            android:layout_marginLeft="30sp"
+            android:layout_marginTop="200sp"
+            android:layout_marginRight="30sp"
+            android:alpha=".5" />
+
+        <include
+            layout="@layout/nextview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nowlayout"
+
+            android:layout_marginLeft="30sp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="30sp"
+            android:alpha=".5" />
+
+        <include
+            android:id="@+id/timeandclass"
+            layout="@layout/drawer_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
@@ -28,4 +59,9 @@
         app:menu="@menu/menu" >
 
     </com.google.android.material.navigation.NavigationView>
+
+
+
+
+
 </androidx.drawerlayout.widget.DrawerLayout>

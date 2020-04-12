@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import java.text.DateFormat;
@@ -23,11 +24,14 @@ import com.google.firebase.database.*;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
@@ -50,9 +54,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String teacher;
     String room_no;
     String category;
-    String email;
-    String password;
-    String name;
     Users currentUser;
     ProgressBar progressBar;
     @Override
@@ -250,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //launches main screen
     void launch() {
         setContentView(R.layout.activity_main);
+        int saturday = R.drawable.saturday;
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer);
@@ -287,7 +289,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final TextView time = findViewById(R.id.timeTextView);
         final GenerateId generateId = new GenerateId();
         final TextView classTextView = (TextView) findViewById(R.id.classNameText);
-        final TextView udiTextView = (TextView) findViewById(R.id.uidTextView);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         final DatabaseReference mdatabaseReference = databaseReference.child("User").child(firebaseUser.getUid());
         mdatabaseReference.addValueEventListener(new ValueEventListener() {
@@ -339,7 +340,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 final TextView currentTeacher = (TextView) findViewById(R.id.currentTeacher);
                 final TextView currentRoom = (TextView) findViewById(R.id.currentRoom_no);
                 final TextView currentCategory = (TextView) findViewById(R.id.currentCategory);
-                udiTextView.setText(firebaseUser.getUid());
                 timeLeftTextView.setText(timeLeftCalculation.timeLeft());
                 try {
                     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
@@ -351,13 +351,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 subject = Objects.requireNonNull(dataSnapshot.child("subject").getValue()).toString();
                                 currentSubject.setText(subject);
                             } catch (NullPointerException e) {
-                                currentSubject.setText("Not Found :(");
+                                if(generateId.dayID() == 10){
+                                    currentSubject.setText("SUNDAY");
+                                }
+                                else if(generateId.dayID() == 16){
+                                    currentSubject.setText("SATURDAY");
+                                }
+                                else
+                                {
+                                    if(generateId.time()==21){
+                                        currentSubject.setText("CLASSES NOT STARTED YET");
+                                    }
+                                    else if(generateId.time()==20){
+                                        currentSubject.setText("NO MORE CLASSES TODAY");
+                                    }
+                                    else
+                                    currentSubject.setText("Not Found :(");
+                                }
                             }
                             try {
                                 teacher = Objects.requireNonNull(dataSnapshot.child("teacher").getValue()).toString();
                                 currentTeacher.setText(teacher);
                             } catch (NullPointerException e) {
-                                currentTeacher.setText("Please contact at amansingh8066@gmail.com\nKindly send your class routine");
+                                if(generateId.dayID() == 10){
+                                    currentTeacher.setText("NO UPCOMING CLASSES");
+                                }
+                                else if(generateId.dayID() == 16){
+                                    currentTeacher.setText("NO UPCOMING CLASSES");
+                                }
+                                else
+                                {
+                                    if(generateId.time()==21){
+                                        currentTeacher.setText("NO UPCOMING CLASSES");
+                                    }
+                                    else if(generateId.time()==20){
+                                        currentTeacher.setText("NO UPCOMING CLASSES");
+                                    }
+                                    else
+                                        currentTeacher.setText("Please contactmeemail at amansingh8066@gmail.com\nKindly send your class routine");
+                                }
+
                             }
                             try {
                                 room_no = Objects.requireNonNull(dataSnapshot.child("room_no").getValue()).toString();
@@ -621,6 +654,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             int hour = Integer.parseInt(formatterHour.format(calendarHour.getTime()));
             int minute = Integer.parseInt(formatterMinute.format(calendarMinute.getTime()));
             int time = ((100*hour)+minute);
+            if(time<899){
+                return 21;
+            }
             if(time>=900&&time<955){
                 return 10;
             }if(time>=955&&time<1050){
