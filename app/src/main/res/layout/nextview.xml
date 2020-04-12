@@ -10,7 +10,7 @@
 
 
     <TextView
-        android:id="@+id/currentSubject"
+        android:id="@+id/nextSubject"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
@@ -21,10 +21,10 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nowText" />
+        app:layout_constraintTop_toBottomOf="@+id/nextText" />
 
     <TextView
-        android:id="@+id/currentTeacher"
+        android:id="@+id/nextTeacher"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -34,10 +34,10 @@
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentSubject" />
+        app:layout_constraintTop_toBottomOf="@+id/nextSubject" />
 
     <TextView
-        android:id="@+id/currentRoom_no"
+        android:id="@+id/nextRoom_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
@@ -48,10 +48,10 @@
         android:textSize="14sp"
         android:textStyle="italic"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentTeacher" />
+        app:layout_constraintTop_toBottomOf="@+id/nextTeacher" />
 
     <TextView
-        android:id="@+id/currentCategory"
+        android:id="@+id/nextCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -62,10 +62,10 @@
         android:textSize="14sp"
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentTeacher" />
+        app:layout_constraintTop_toBottomOf="@+id/nextTeacher" />
 
     <TextView
-        android:id="@+id/nowText"
+        android:id="@+id/nextText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -79,7 +79,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/timeLeftTextView"
+        android:id="@+id/nextClassStartTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -87,14 +87,14 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentTeacher" />
+        app:layout_constraintTop_toBottomOf="@+id/nextTeacher" />
 
     <TextView
-        android:id="@+id/classId"
+        android:id="@+id/nextclassId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="30dp"
         android:alpha=".5"
         android:text="\@classId"
         android:textSize="10sp"
@@ -104,14 +104,14 @@
 
 
     <ProgressBar
-        android:id="@+id/progressBar2"
+        android:id="@+id/nextClassProgressBar"
         style="@android:style/Widget.ProgressBar.Small.Inverse"
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:layout_marginTop="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeLeftTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/nextClassStartTime" />
 
     <TextView
         android:id="@+id/notice"
@@ -125,6 +125,6 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+        app:layout_constraintTop_toBottomOf="@+id/nextClassProgressBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

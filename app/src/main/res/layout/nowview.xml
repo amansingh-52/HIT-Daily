@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/currentSubject"
+        android:id="@+id/nowSubject"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -23,7 +23,7 @@
         app:layout_constraintTop_toBottomOf="@+id/nowText" />
 
     <TextView
-        android:id="@+id/currentTeacher"
+        android:id="@+id/nowTeacher"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -33,10 +33,10 @@
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentSubject" />
+        app:layout_constraintTop_toBottomOf="@+id/nowSubject" />
 
     <TextView
-        android:id="@+id/currentRoom_no"
+        android:id="@+id/nowRoom_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
@@ -47,10 +47,10 @@
         android:textSize="14sp"
         android:textStyle="italic"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentTeacher" />
+        app:layout_constraintTop_toBottomOf="@+id/nowTeacher" />
 
     <TextView
-        android:id="@+id/currentCategory"
+        android:id="@+id/nowCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -61,7 +61,7 @@
         android:textSize="14sp"
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentTeacher" />
+        app:layout_constraintTop_toBottomOf="@+id/nowTeacher" />
 
     <TextView
         android:id="@+id/nowText"
@@ -79,7 +79,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/timeLeftTextView"
+        android:id="@+id/nowClassStartTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -87,10 +87,10 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentTeacher" />
+        app:layout_constraintTop_toBottomOf="@+id/nowTeacher" />
 
     <TextView
-        android:id="@+id/classId"
+        android:id="@+id/nowclassId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -103,14 +103,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
-        android:id="@+id/progressBar2"
+        android:id="@+id/nowClassProgressBar"
         style="@android:style/Widget.ProgressBar.Small.Inverse"
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:layout_marginTop="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeLeftTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/nowClassStartTime" />
 
     <TextView
         android:id="@+id/textView6"

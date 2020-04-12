@@ -32,11 +32,11 @@
             android:alpha=".5" />
 
         <include
+
             layout="@layout/nextview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/nowlayout"
-
             android:layout_marginLeft="30sp"
             android:layout_marginTop="50dp"
             android:layout_marginRight="30sp"

@@ -24,14 +24,11 @@ import com.google.firebase.database.*;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
@@ -253,7 +250,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //launches main screen
     void launch() {
         setContentView(R.layout.activity_main);
-        int saturday = R.drawable.saturday;
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer);
@@ -272,9 +268,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSpinner();
 
     }
-    public void toEmailLogIn(MenuItem menuItem){
-        setContentView(R.layout.signup);
-    }
+
     //Function for on click save button
     public void toHome(View view){
        launch();
@@ -282,10 +276,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        uploadData(currentUser);
     }
     public void setUpHomeScreen() {
-        final ProgressBar progressBar1 = findViewById(R.id.progressBar2);
+        final ProgressBar progressBar1 = findViewById(R.id.nowClassProgressBar);
+        final ProgressBar nextProgressBar = findViewById(R.id.nextClassProgressBar);
         progressBar1.setVisibility(View.VISIBLE);
         final TextView textView1 = findViewById(R.id.classNameText);
-        final TextView timeLeftTextView = (TextView) findViewById(R.id.timeLeftTextView);
+        final TextView timeLeftTextView = (TextView) findViewById(R.id.nowClassStartTime);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         final TextView time = findViewById(R.id.timeTextView);
@@ -317,7 +312,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Toast.makeText(MainActivity.this,"Group error",Toast.LENGTH_LONG).show();
                 }
                 progressBar1.setVisibility(View.GONE);
-                TextView classID = (TextView) findViewById(R.id.classId);
+                nextProgressBar.setVisibility(View.GONE);
+
+                TextView classID = (TextView) findViewById(R.id.nowclassId);
                 GenerateClassId generateClassId = new GenerateClassId(dept, section, yearString, groupString);
                 classTextView.setText(dept + " -" + section + " \"" + groupString + "\" (" + yearString + ")");
                 long deptId = generateClassId.dept(dept);
@@ -328,11 +325,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 final String id = Long.toString(yearId) + Long.toString(deptId) + Long.toString(sectionId) + Long.toString(groupId) + Long.toString(timeId);
                 classID.setText("@classID\n" + id);
                 final TimeLeftCalculation timeLeftCalculation = new TimeLeftCalculation();
-                final TextView currentSubject = (TextView) findViewById(R.id.currentSubject);
-                final TextView currentTeacher = (TextView) findViewById(R.id.currentTeacher);
-                final TextView currentRoom = (TextView) findViewById(R.id.currentRoom_no);
-                final TextView currentCategory = (TextView) findViewById(R.id.currentCategory);
+                final TextView currentSubject = (TextView) findViewById(R.id.nowSubject);
+                final TextView currentTeacher = (TextView) findViewById(R.id.nowTeacher);
+                final TextView currentRoom = (TextView) findViewById(R.id.nowRoom_no);
+                final TextView currentCategory = (TextView) findViewById(R.id.nowCategory);
                 final TextView nowTextView = (TextView) findViewById(R.id.nowText);
+                final TextView nextText = findViewById(R.id.nextText);
+                final TextView nextTime = findViewById(R.id.nextClassStartTime);
+                final TextView nextRoom = findViewById(R.id.nextRoom_no);
+                final TextView nextCategory = findViewById(R.id.nextCategory);
+                final TextView nextClass = findViewById(R.id.nextSubject);
+                final TextView nextTeacher = findViewById(R.id.nextTeacher);
                 timeLeftTextView.setText(timeLeftCalculation.timeLeft());
                 try {
                     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
@@ -347,26 +350,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 if(generateId.dayID() == 10){
                                     currentSubject.setText("");
                                     ConstraintLayout now = findViewById(R.id.nowlayout);
-                                    ConstraintLayout next = findViewById(R.id.nextLayout);
-                                    next.setBackgroundResource(R.drawable.sundaysupport);
                                     now.setBackgroundResource(R.drawable.sunday);
+                                    if(generateId.time()==20)
+                                    {
+                                        ConstraintLayout background = findViewById(R.id.buttonNow);
+                                        background.setBackgroundResource(R.drawable.eveningsky);
+                                    }
                                     nowTextView.setText("");
+                                    nextText.setText("");
+                                    nextTime.setText("");
+                                    nextRoom.setText("");
+                                    nextCategory.setText("");
+                                    nextClass.setText("");
+                                    nextTeacher.setText("NO UPCOMING CLASSES");
                                 }
                                 else if(generateId.dayID() == 16){
                                     currentSubject.setText("");
                                     ConstraintLayout now = findViewById(R.id.nowlayout);
-                                    ConstraintLayout next = findViewById(R.id.nextLayout);
-                                    next.setBackgroundResource(R.drawable.sundaysupport);
                                     now.setBackgroundResource(R.drawable.saturday);
+                                    if(generateId.time()==20)
+                                    {
+                                        ConstraintLayout background = findViewById(R.id.buttonNow);
+                                        background.setBackgroundResource(R.drawable.eveningsky);
+                                    }
                                     nowTextView.setText("");
+                                    nextText.setText("");
+                                    nextTime.setText("");
+                                    nextRoom.setText("");
+                                    nextCategory.setText("");
+                                    nextClass.setText("");
+                                    nextTeacher.setText("NO UPCOMING CLASSES");
                                 }
                                 else
                                 {
                                     if(generateId.time()==21){
-                                        currentSubject.setText("CLASSES NOT STARTED YET");
+                                        ConstraintLayout now = findViewById(R.id.nowlayout);
+                                        now.setBackgroundResource(R.drawable.morning);
+                                        nextTeacher.setText("CLASSES NOT STARTED YET");
                                     }
                                     else if(generateId.time()==20){
-                                        currentSubject.setText("NO MORE CLASSES TODAY");
+                                        ConstraintLayout now = findViewById(R.id.nowlayout);
+                                        now.setBackgroundResource(R.drawable.evening);
+                                        ConstraintLayout background = findViewById(R.id.buttonNow);
+                                        background.setBackgroundResource(R.drawable.eveningsky);
+                                       nextTeacher.setText("NO MORE CLASSES TODAY");
                                     }
                                     else
                                     currentSubject.setText("Not Found :(");
