@@ -225,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
+        setNameAndEmail();
     }
 
     public void uploadData(Users users){
@@ -315,16 +316,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }catch (NullPointerException e){
                     Toast.makeText(MainActivity.this,"Group error",Toast.LENGTH_LONG).show();
                 }
-                TextView userNameTextView = findViewById(R.id.userNameTextView);
-                try {
-
-                    userNameTextView.setText( dataSnapshot.child("info").child("name").getValue().toString());
-
-                }catch (NullPointerException e){
-                    e.printStackTrace();
-                }
-                TextView userEmailTextView = findViewById(R.id.userEmailTextView);
-                userEmailTextView.setText(firebaseUser.getEmail());
                 progressBar1.setVisibility(View.GONE);
                 TextView classID = (TextView) findViewById(R.id.classId);
                 GenerateClassId generateClassId = new GenerateClassId(dept, section, yearString, groupString);
@@ -416,6 +407,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             } catch (NullPointerException e) {
                                 currentCategory.setText("");
                             }
+                            setNameAndEmail();
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -455,6 +447,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    public void setNameAndEmail(){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference mdatabaseReference = databaseReference.child("User").child(firebaseUser.getUid());
+        mdatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                TextView userEmailTextView = findViewById(R.id.userEmailTextView);
+                TextView userNameTextView = findViewById(R.id.userNameTextView);
+                try {
+                    userNameTextView.setText(dataSnapshot.child("info").child("name").getValue().toString());
+                    userEmailTextView.setText(dataSnapshot.child("info").child("email").getValue().toString());
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     public void setSpinner(){
         final Spinner spinner1 = findViewById(R.id.deptSpinner);
