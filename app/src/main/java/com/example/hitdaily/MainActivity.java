@@ -2,10 +2,12 @@ package com.example.hitdaily;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -23,6 +25,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -138,6 +142,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void logout(MenuItem menuItem){
+      AlertDialog.Builder builder = new AlertDialog.Builder(this);
+      builder.setMessage("Do you want to Logout?");
+      builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+              logOut();
+              dialog.cancel();
+          }
+      });
+      builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+              launch();
+              dialog.cancel();
+          }
+      });
+      AlertDialog alertDialog = builder.create();
+      alertDialog.show();
+    }
+    public void  logOut(){
         firebaseAuth.signOut();
         launchLogIN();
     }
