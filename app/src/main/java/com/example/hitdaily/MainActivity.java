@@ -26,10 +26,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String category;
     Users currentUser;
     ProgressBar progressBar;
+    int counter=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -413,10 +416,227 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
     }
+    public int nextDay(final int counter){
+        int value = 0;
+        TextView subject1 = findViewById(R.id.sub_view);
+        TextView subject2 = findViewById(R.id.sub2_view);
+        TextView subject3 = findViewById(R.id.sub3_view);
+        TextView subject4 = findViewById(R.id.sub4_view);
+        TextView subject5 = findViewById(R.id.sub5_view);
+        TextView subject6 = findViewById(R.id.sub6_view);
+        TextView subject7 = findViewById(R.id.sub7_view);
+        TextView subject8 = findViewById(R.id.sub8_view);
+        TextView subject9 = findViewById(R.id.sub9_view);
+        TextView subject10 = findViewById(R.id.sub10_view);
+        TextView teacher1 = findViewById(R.id.teacher_textView);
+        TextView teacher2 = findViewById(R.id.teacher2_textView);
+        TextView teacher3 = findViewById(R.id.teacher3_textView);
+        TextView teacher4 = findViewById(R.id.teacher4_textView);
+        TextView teacher5 = findViewById(R.id.teacher5_textView);
+        TextView teacher6 = findViewById(R.id.teacher6_textView);
+        TextView teacher7 = findViewById(R.id.teacher7_textView);
+        TextView teacher8 = findViewById(R.id.teacher8_textView);
+        TextView teacher9 = findViewById(R.id.teacher9_textView);
+        TextView teacher10 = findViewById(R.id.teacher10_textView);
+        TextView room1 = findViewById(R.id.category_textView);
+        TextView room2 = findViewById(R.id.category2_textView);
+        TextView room3 = findViewById(R.id.category3_textView);
+        TextView room4 = findViewById(R.id.category4_textView);
+        TextView room5 = findViewById(R.id.category5_textView);
+        TextView room6 = findViewById(R.id.category6_textView);
+        TextView room7 = findViewById(R.id.category7_textView);
+        TextView room8 = findViewById(R.id.category8_textView);
+        TextView room9 = findViewById(R.id.category9_textView);
+        TextView room10 = findViewById(R.id.category10_textView);
+        room1.setText("");
+        room2.setText("");
+        room3.setText("");
+        room4.setText("");
+        room5.setText("");
+        room6.setText("");
+        room7.setText("");
+        room8.setText("");
+        room9.setText("");
+        room10.setText("");
+        teacher1.setText("");
+        teacher2.setText("");
+        teacher3.setText("");
+        teacher4.setText("");
+        teacher5.setText("");
+        teacher6.setText("");
+        teacher7.setText("");
+        teacher8.setText("");
+        teacher9.setText("");
+        teacher10.setText("");
+        subject1.setText("");
+        subject2.setText("");
+        subject3.setText("");
+        subject4.setText("");
+        subject5.setText("");
+        subject6.setText("");
+        subject7.setText("");
+        subject8.setText("");
+        subject9.setText("");
+        subject10.setText("");
+        TextView day = findViewById(R.id.day_TextView);
+        GenerateId gid = new GenerateId();
+        int dayNo = gid.dayID();
+        dayNo=dayNo+counter;
+        if((dayNo)==10){
+            day.setText("SUNDAY");
+            return 1;
+        }
+        if(dayNo==11){
+            day.setText("MONDAY");
+        }
+        if(dayNo==12){
+            day.setText("TUESDAY");
+        }
+        if(dayNo==13){
+            day.setText("WEDNESDAY");
+        }
+        if(dayNo==14){
+            day.setText("THURSDAY");
+        }
+        if(dayNo==15){
+            day.setText("FRIDAY");
+        }
+        if(dayNo==16){
+            day.setText("SATURDAY");
+            return 2;
+        }
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference mdatabaseReference = databaseReference.child("User").child(firebaseUser.getUid());
+        List<Classes> list = new LinkedList<>();
+        mdatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    dept = dataSnapshot.child("pref").child("dept").getValue().toString();
+                } catch (NullPointerException e) {
+                    Toast.makeText(MainActivity.this, "Dept error", Toast.LENGTH_LONG).show();
+                }
+                try {
+                    section = dataSnapshot.child("pref").child("section").getValue().toString();
+                } catch (NullPointerException e) {
+                    Toast.makeText(MainActivity.this, "Section error", Toast.LENGTH_LONG).show();
+                }
+                try {
+                    yearString = dataSnapshot.child("pref").child("year").getValue().toString();
+                } catch (NullPointerException e) {
+                    Toast.makeText(MainActivity.this, "Year error", Toast.LENGTH_LONG).show();
+                }
+                try {
+                    groupString = dataSnapshot.child("pref").child("group").getValue().toString();
+                } catch (NullPointerException e) {
+                    Toast.makeText(MainActivity.this, "Group error", Toast.LENGTH_LONG).show();
+                }
+                GenerateClassId generateClassId = new GenerateClassId(dept, section, yearString, groupString);
+                long deptId = generateClassId.dept(dept);
+                long sectionId = generateClassId.section(section);
+                long yearId = generateClassId.year(yearString);
+                long groupId = generateClassId.group(groupString);
+                GenerateId generateId = new GenerateId();
+                int dayNumber = generateId.dayID()+counter;
+                if(dayNumber<10){
+                    dayNumber=16;
+                }
+                if(dayNumber>16){
+                    dayNumber=10;
+                }
+                int time = (dayNumber*100)+10;
+                int i = 0;
+                Classes classes = new Classes();
+                while(i<10){
+                    int clac = i;
+                    final String id = Long.toString(yearId) + Long.toString(deptId) + Long.toString(sectionId) + Long.toString(groupId) + Long.toString(time);
+                    DatabaseReference dbr  = FirebaseDatabase.getInstance().getReference();
+                    DatabaseReference mdbr = dbr.child("classes").child(id);
+                    int finalTime = time;
+                    mdbr.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            try {
+                                classes.subject=dataSnapshot.child("subject").getValue().toString();
+                            }catch (NullPointerException e){
+                                return;
+                            }
+                            try {
+                                classes.teacher=dataSnapshot.child("teacher").getValue().toString();
+                            }catch (NullPointerException e){
+                                e.printStackTrace();
+                            }
+                            try {
+                                classes.room_no=dataSnapshot.child("room_no").getValue().toString();
+                            }catch (NullPointerException e){
+                                e.printStackTrace();
+                            }
+                            try {
+                                classes.category=dataSnapshot.child("category").getValue().toString();
+                            }catch (NullPointerException e){
+                                e.printStackTrace();
+                            }
+                            list.add(classes);
+                            if(clac==0){
+                                subject1.setText(list.get(0).getSubject());
+                                teacher1.setText(list.get(0).getTeacher());
+                                room1.setText((list.get(0).getRoom_no()));}
+                            if(clac==1){
+                                subject2.setText(list.get(0).getSubject());
+                                teacher2.setText(list.get(0).getTeacher());
+                                room2.setText((list.get(0).getRoom_no()));}
+                            if(clac==2){
+                                subject3.setText(list.get(0).getSubject());
+                                teacher3.setText(list.get(0).getTeacher());
+                                room3.setText((list.get(0).getRoom_no()));}
+                            if(clac==3){
+                                subject4.setText(list.get(0).getSubject());
+                                teacher4.setText(list.get(0).getTeacher());
+                                room4.setText((list.get(0).getRoom_no()));}
+                            if(clac==4){
+                                subject5.setText(list.get(0).getSubject());
+                                teacher5.setText(list.get(0).getTeacher());
+                                room5.setText((list.get(0).getRoom_no()));}
+                            if(clac==5){
+                                subject6.setText(list.get(0).getSubject());
+                                teacher6.setText(list.get(0).getTeacher());
+                                room6.setText((list.get(0).getRoom_no()));}
+                            if(clac==6){
+                                subject7.setText(list.get(0).getSubject());
+                                teacher7.setText(list.get(0).getTeacher());
+                                room7.setText((list.get(0).getRoom_no()));}
+                            if(clac==7){
+                                subject8.setText(list.get(0).getSubject());
+                                teacher8.setText(list.get(0).getTeacher());
+                                room8.setText((list.get(0).getRoom_no()));}
+                            if(clac==8){
+                                subject9.setText(list.get(0).getSubject());
+                                teacher9.setText(list.get(0).getTeacher());
+                                room9.setText((list.get(0).getRoom_no()));}
+                            if(clac==9){
+                                subject10.setText(list.get(0).getSubject());
+                                teacher10.setText(list.get(0).getTeacher());
+                                room10.setText((list.get(0).getRoom_no()));}
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                        }
+                    });
 
+                    i++;
+                    time++;
+                }
+            }
 
-
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        return value;
+    }
     public void display(View view){
         Toast.makeText(this,firebaseAuth.getUid(),Toast.LENGTH_LONG).show();
     }
@@ -452,7 +672,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://github.com/amansingh-52/HIT-Daily"));
         startActivity(intent);
     }
-    public void todaySetUp(MenuItem menuItem){
+    public void nextSetUp(View view){
+
+    }
+    public void setDayView(){
         setContentView(R.layout.mainfortoday);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -463,8 +686,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
         setNameAndEmail();
+    }
+    public void todaySetUp(MenuItem menuItem){
+        setDayView();
         today();
     }
+
+    public void next(View view){
+        setDayView();
+       if( nextDay(counter) == 1)
+           counter=0;
+       else if( nextDay(counter) == 2)
+            counter=0;
+        else counter++;
+
+    }
+    public void prev(View view){
+        counter--;
+        setDayView();
+        nextDay(counter);
+    }
+
+
     public void help(MenuItem menuItem){
         setContentView(R.layout.mainforhelp);
         toolbar = findViewById(R.id.toolbar);
@@ -646,10 +889,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         }
                                     }
                                     else if(generateId.time()==20){
-                                        ConstraintLayout now = findViewById(R.id.nowlayout);
-                                        now.setBackgroundResource(R.drawable.evening);
-                                        ConstraintLayout background = findViewById(R.id.buttonNow);
-                                        background.setBackgroundResource(R.drawable.eveningsky);
                                        nextTeacher.setText("NO MORE CLASSES TODAY");
                                     }
                                     else
@@ -1023,5 +1262,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return null;
         }
     }
-
 }

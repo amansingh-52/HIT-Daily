@@ -1,0 +1,71 @@
+[33mcommit 4d6925428ca534af06c47558a4c1234a61df514b[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: amansingh-52 <amansingh8066@gmail.com>
+Date:   Fri Apr 24 13:41:05 2020 +0530
+
+    Added dialog button for Logout
+
+[33mcommit d5341027381ec6f6ab57fe571bbee45402571586[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: amansingh-52 <amansingh8066@gmail.com>
+Date:   Fri Apr 24 12:42:13 2020 +0530
+
+    Added today feature
+
+[33mcommit 1ef93c67f61e8549230231e9ba811f7c729a05c5[m
+Author: amansingh-52 <amansingh8066@gmail.com>
+Date:   Sun Apr 12 19:07:50 2020 +0530
+
+    Added another UI update
+
+[33mcommit 5ea252ce2638f5a94f541d5ea29a5e4b9aea521e[m
+Author: amansingh-52 <amansingh8066@gmail.com>
+Date:   Sun Apr 12 10:10:38 2020 +0530
+
+    Fixed name and email display issue on clicking of help
+
+[33mcommit 0c4e5f4be4628c1faae20a285a2b84898205ce18[m
+Author: amansingh-52 <amansingh8066@gmail.com>
+Date:   Sun Apr 12 09:40:45 2020 +0530
+
+    Added support image for sunday and saturday
+
+[33mcommit 663dcb5aa14ea03476000f068968bdfd42dedd37[m
+Author: amansingh-52 <amansingh8066@gmail.com>
+Date:   Sun Apr 12 09:07:00 2020 +0530
+
+    Added saturday and sunday image background
+
+[33mcommit 565dec9be19f34d3d3d2d577bbe67f8946cb0ad8[m
+Author: amansingh-52 <amansingh8066@gmail.com>
+Date:   Sun Apr 12 07:56:28 2020 +0530
+
+    Updated UI
+
+[33mcommit 05d8314de2f886d293b0525d81e6cd09f9090cae[m
+Author: amansingh-52 <amansingh8066@gmail.com>
+Date:   Sat Apr 11 10:40:17 2020 +0530
+
+    Resolved update pref no user name issue
+
+[33mcommit 0f3c1a5b523d5768833072832e04ccdd8a413d25[m
+Author: amansingh-52 <amansingh8066@gmail.com>
+Date:   Sat Apr 11 09:04:14 2020 +0530
+
+    Fixed onCreate Database load issue
+
+[33mcommit 67a5a4ae1cc5e2e06e6b97349266afd4d80dfb3c[m
+Author: amansingh-52 <amansingh8066@gmail.com>
+Date:   Fri Apr 10 22:06:57 2020 +0530
+
+    Fixed login and logout issues
+
+[33mcommit 20055e99c4f00aa1409b34ba1960e9a50d321913[m
+Author: amansingh-52 <amansingh8066@gmail.com>
+Date:   Fri Apr 10 16:04:36 2020 +0530
+
+    Updated drawer header
+
+[33mcommit bfecd345cfe915f4ab74ab89fe19792e730e716f[m
+Author: amansingh-52 <amansingh8066@gmail.com>
+Date:   Fri Apr 10 13:43:08 2020 +0530
+
+    Initial Commit

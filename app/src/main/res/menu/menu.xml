@@ -16,11 +16,6 @@
                 android:title="Today"
                 android:onClick="todaySetUp"
             />
-            <item
-                android:id="@+id/week"
-                android:icon="@drawable/ic_today_black_24dp"
-                android:title="Week (Coming Soon)"
-                />
 
         </menu>
     </item>

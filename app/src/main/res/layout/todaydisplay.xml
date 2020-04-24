@@ -16,8 +16,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="70dp"
         android:text="TextView"
+        android:textStyle="bold"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -37,7 +38,7 @@
         android:id="@+id/roomNO_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="70dp"
         android:layout_marginEnd="4dp"
         android:text="09:00 AM"
         android:textStyle="bold"
@@ -62,6 +63,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="20dp"
             android:text="TextView"
+            android:textStyle="bold"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/teacher_textView" />
@@ -106,6 +108,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="20dp"
             android:text="TextView"
+            android:textStyle="bold"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/teacher2_textView" />
@@ -150,6 +153,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="20dp"
             android:text="TextView"
+            android:textStyle="bold"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/teacher3_textView" />
@@ -194,6 +198,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="20dp"
             android:text="TextView"
+            android:textStyle="bold"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/teacher4_textView" />
@@ -238,6 +243,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="20dp"
             android:text="TextView"
+            android:textStyle="bold"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/teacher5_textView" />
@@ -282,6 +288,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="20dp"
             android:text="TextView"
+            android:textStyle="bold"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/teacher6_textView" />
@@ -325,6 +332,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="20dp"
         android:text="TextView"
+        android:textStyle="bold"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/teacher7_textView" />
@@ -368,6 +376,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="20dp"
         android:text="TextView"
+        android:textStyle="bold"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/teacher8_textView" />
@@ -412,6 +421,8 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="20dp"
         android:text="TextView"
+        android:textStyle="bold
+"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/teacher9_textView" />
@@ -451,14 +462,41 @@
 
     <TextView
         android:id="@+id/day_TextView"
+        android:layout_width="194dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/frame"
+        android:gravity="center"
+        android:text="day_TextView"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textSize="30sp"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:text="day_TextView"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:text="Next"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:onClick="next"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:text="Prev"
+        android:onClick="prev"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
