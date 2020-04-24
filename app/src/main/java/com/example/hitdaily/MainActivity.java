@@ -10,6 +10,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 import com.example.myapplication.R;
@@ -29,6 +31,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
@@ -42,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Toolbar toolbar;
     NavigationView navigationView;
     SetTime setTime = new SetTime();
-    String[] year ={"1st"/*,"2nd","3rd","4th"*/};
-    String[] branch = {/*"CSE",*/ "ECE",/*"IT","CE","ME",*/"ChE"/*,"EE","AEIE","BT"*/};
+    String[] year ={"1st","2nd","3rd","4th"};
+    String[] branch = {"CSE", "ECE","IT","CE","ME","ChE","EE","AEIE","BT"};
     String[] sec = {"N/A","A","B","C"};
     String[] group = {"A","B"};
     String dept="Hello",section="World",yearString = "year", groupString = "group";
@@ -177,6 +180,219 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    public void today() {
+        TextView subject1 = findViewById(R.id.sub_view);
+        TextView subject2 = findViewById(R.id.sub2_view);
+        TextView subject3 = findViewById(R.id.sub3_view);
+        TextView subject4 = findViewById(R.id.sub4_view);
+        TextView subject5 = findViewById(R.id.sub5_view);
+        TextView subject6 = findViewById(R.id.sub6_view);
+        TextView subject7 = findViewById(R.id.sub7_view);
+        TextView subject8 = findViewById(R.id.sub8_view);
+        TextView subject9 = findViewById(R.id.sub9_view);
+        TextView subject10 = findViewById(R.id.sub10_view);
+        TextView teacher1 = findViewById(R.id.teacher_textView);
+        TextView teacher2 = findViewById(R.id.teacher2_textView);
+        TextView teacher3 = findViewById(R.id.teacher3_textView);
+        TextView teacher4 = findViewById(R.id.teacher4_textView);
+        TextView teacher5 = findViewById(R.id.teacher5_textView);
+        TextView teacher6 = findViewById(R.id.teacher6_textView);
+        TextView teacher7 = findViewById(R.id.teacher7_textView);
+        TextView teacher8 = findViewById(R.id.teacher8_textView);
+        TextView teacher9 = findViewById(R.id.teacher9_textView);
+        TextView teacher10 = findViewById(R.id.teacher10_textView);
+        TextView room1 = findViewById(R.id.category_textView);
+        TextView room2 = findViewById(R.id.category2_textView);
+        TextView room3 = findViewById(R.id.category3_textView);
+        TextView room4 = findViewById(R.id.category4_textView);
+        TextView room5 = findViewById(R.id.category5_textView);
+        TextView room6 = findViewById(R.id.category6_textView);
+        TextView room7 = findViewById(R.id.category7_textView);
+        TextView room8 = findViewById(R.id.category8_textView);
+        TextView room9 = findViewById(R.id.category9_textView);
+        TextView room10 = findViewById(R.id.category10_textView);
+        room1.setText("");
+        room2.setText("");
+        room3.setText("");
+        room4.setText("");
+        room5.setText("");
+        room6.setText("");
+        room7.setText("");
+        room8.setText("");
+        room9.setText("");
+        room10.setText("");
+        teacher1.setText("");
+        teacher2.setText("");
+        teacher3.setText("");
+        teacher4.setText("");
+        teacher5.setText("");
+        teacher6.setText("");
+        teacher7.setText("");
+        teacher8.setText("");
+        teacher9.setText("");
+        teacher10.setText("");
+        subject1.setText("");
+        subject2.setText("");
+        subject3.setText("");
+        subject4.setText("");
+        subject5.setText("");
+        subject6.setText("");
+        subject7.setText("");
+        subject8.setText("");
+        subject9.setText("");
+        subject10.setText("");
+        TextView day = findViewById(R.id.day_TextView);
+        GenerateId gid = new GenerateId();
+        if(gid.dayID()==10){
+            day.setText("SUNDAY");
+        }
+        if(gid.dayID()==11){
+            day.setText("MONDAY");
+        }
+        if(gid.dayID()==12){
+            day.setText("TUESDAY");
+        }
+        if(gid.dayID()==13){
+            day.setText("WEDNESDAY");
+        }
+        if(gid.dayID()==14){
+            day.setText("THURSDAY");
+        }
+        if(gid.dayID()==15){
+            day.setText("FRIDAY");
+        }
+        if(gid.dayID()==16){
+            day.setText("SATURDAY");
+        }
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference mdatabaseReference = databaseReference.child("User").child(firebaseUser.getUid());
+        List<Classes> list = new LinkedList<>();
+        mdatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    dept = dataSnapshot.child("pref").child("dept").getValue().toString();
+                } catch (NullPointerException e) {
+                    Toast.makeText(MainActivity.this, "Dept error", Toast.LENGTH_LONG).show();
+                }
+                try {
+                    section = dataSnapshot.child("pref").child("section").getValue().toString();
+                } catch (NullPointerException e) {
+                    Toast.makeText(MainActivity.this, "Section error", Toast.LENGTH_LONG).show();
+                }
+                try {
+                    yearString = dataSnapshot.child("pref").child("year").getValue().toString();
+                } catch (NullPointerException e) {
+                    Toast.makeText(MainActivity.this, "Year error", Toast.LENGTH_LONG).show();
+                }
+                try {
+                    groupString = dataSnapshot.child("pref").child("group").getValue().toString();
+                } catch (NullPointerException e) {
+                    Toast.makeText(MainActivity.this, "Group error", Toast.LENGTH_LONG).show();
+                }
+                GenerateClassId generateClassId = new GenerateClassId(dept, section, yearString, groupString);
+                long deptId = generateClassId.dept(dept);
+                long sectionId = generateClassId.section(section);
+                long yearId = generateClassId.year(yearString);
+                long groupId = generateClassId.group(groupString);
+                GenerateId generateId = new GenerateId();
+                int time = (generateId.dayID()*100)+10;
+                int i = 0;
+                Classes classes = new Classes();
+                while(i<10){
+                    int clac = i;
+                    final String id = Long.toString(yearId) + Long.toString(deptId) + Long.toString(sectionId) + Long.toString(groupId) + Long.toString(time);
+                    DatabaseReference dbr  = FirebaseDatabase.getInstance().getReference();
+                    DatabaseReference mdbr = dbr.child("classes").child(id);
+                    int finalTime = time;
+                    mdbr.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            try {
+                                classes.subject=dataSnapshot.child("subject").getValue().toString();
+                            }catch (NullPointerException e){
+                                return;
+                            }
+                            try {
+                                classes.teacher=dataSnapshot.child("teacher").getValue().toString();
+                            }catch (NullPointerException e){
+                                e.printStackTrace();
+                            }
+                            try {
+                                classes.room_no=dataSnapshot.child("room_no").getValue().toString();
+                            }catch (NullPointerException e){
+                                e.printStackTrace();
+                            }
+                            try {
+                                classes.category=dataSnapshot.child("category").getValue().toString();
+                            }catch (NullPointerException e){
+                                e.printStackTrace();
+                            }
+                            list.add(classes);
+                            if(clac==0){
+                            subject1.setText(list.get(0).getSubject());
+                            teacher1.setText(list.get(0).getTeacher());
+                            room1.setText((list.get(0).getRoom_no()));}
+                            if(clac==1){
+                                subject2.setText(list.get(0).getSubject());
+                                teacher2.setText(list.get(0).getTeacher());
+                                room2.setText((list.get(0).getRoom_no()));}
+                            if(clac==2){
+                                subject3.setText(list.get(0).getSubject());
+                                teacher3.setText(list.get(0).getTeacher());
+                                room3.setText((list.get(0).getRoom_no()));}
+                            if(clac==3){
+                                subject4.setText(list.get(0).getSubject());
+                                teacher4.setText(list.get(0).getTeacher());
+                                room4.setText((list.get(0).getRoom_no()));}
+                            if(clac==4){
+                                subject5.setText(list.get(0).getSubject());
+                                teacher5.setText(list.get(0).getTeacher());
+                                room5.setText((list.get(0).getRoom_no()));}
+                            if(clac==5){
+                                subject6.setText(list.get(0).getSubject());
+                                teacher6.setText(list.get(0).getTeacher());
+                                room6.setText((list.get(0).getRoom_no()));}
+                            if(clac==6){
+                                subject7.setText(list.get(0).getSubject());
+                                teacher7.setText(list.get(0).getTeacher());
+                                room7.setText((list.get(0).getRoom_no()));}
+                            if(clac==7){
+                                subject8.setText(list.get(0).getSubject());
+                                teacher8.setText(list.get(0).getTeacher());
+                                room8.setText((list.get(0).getRoom_no()));}
+                            if(clac==8){
+                                subject9.setText(list.get(0).getSubject());
+                                teacher9.setText(list.get(0).getTeacher());
+                                room9.setText((list.get(0).getRoom_no()));}
+                            if(clac==9){
+                                subject10.setText(list.get(0).getSubject());
+                                teacher10.setText(list.get(0).getTeacher());
+                                room10.setText((list.get(0).getRoom_no()));}
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    i++;
+                    time++;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
+    }
+
+
+
+
     public void display(View view){
         Toast.makeText(this,firebaseAuth.getUid(),Toast.LENGTH_LONG).show();
     }
@@ -212,6 +428,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://github.com/amansingh-52/HIT-Daily"));
         startActivity(intent);
     }
+    public void todaySetUp(MenuItem menuItem){
+        setContentView(R.layout.mainfortoday);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        drawerLayout = findViewById(R.id.drawer);
+        navigationView = findViewById(R.id.navigation_view);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        actionBarDrawerToggle.syncState();
+        setNameAndEmail();
+        today();
+    }
     public void help(MenuItem menuItem){
         setContentView(R.layout.mainforhelp);
         toolbar = findViewById(R.id.toolbar);
@@ -237,7 +466,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void mainScreen (MenuItem menuItem){
         launch();
-        setUpHomeScreen();
     }
 
     public void signUp(View view){
@@ -272,7 +500,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //Function for on click save button
     public void toHome(View view){
        launch();
-       setUpHomeScreen();
        uploadData(currentUser);
     }
     public void setUpHomeScreen() {
@@ -323,7 +550,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 long groupId = generateClassId.group(groupString);
                 final long timeId = generateId.generate();
                 final String id = Long.toString(yearId) + Long.toString(deptId) + Long.toString(sectionId) + Long.toString(groupId) + Long.toString(timeId);
-                classID.setText("@classID\n" + id);
+                try {
+                    classID.setText("@classID\n" + id);
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                }
                 final TimeLeftCalculation timeLeftCalculation = new TimeLeftCalculation();
                 final TextView currentSubject = (TextView) findViewById(R.id.nowSubject);
                 final TextView currentTeacher = (TextView) findViewById(R.id.nowTeacher);
@@ -384,9 +615,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 else
                                 {
                                     if(generateId.time()==21){
-                                        ConstraintLayout now = findViewById(R.id.nowlayout);
-                                        now.setBackgroundResource(R.drawable.morning);
-                                        nextTeacher.setText("CLASSES NOT STARTED YET");
+                                        try {
+                                            nextTeacher.setText("CLASSES NOT STARTED YET");
+                                        }catch (NullPointerException nu){
+                                            nu.printStackTrace();
+                                        }
                                     }
                                     else if(generateId.time()==20){
                                         ConstraintLayout now = findViewById(R.id.nowlayout);
@@ -396,7 +629,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                        nextTeacher.setText("NO MORE CLASSES TODAY");
                                     }
                                     else
-                                    currentSubject.setText("Not Found :(");
+                                        try {
+                                            currentSubject.setText("Not Found :(");
+                                        }catch (NullPointerException e1){
+                                            e1.printStackTrace();
+                                        }
                                 }
                             }
                             try {
@@ -418,7 +655,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         currentTeacher.setText("NO UPCOMING CLASSES");
                                     }
                                     else
-                                        currentTeacher.setText("Please contactmeemail at amansingh8066@gmail.com\nKindly send your class routine");
+                                        try {
+                                            currentTeacher.setText("Please contactmeemail at amansingh8066@gmail.com\nKindly send your class routine");
+                                        }catch (NullPointerException e1){
+                                            e1.printStackTrace();
+                                        }
                                 }
 
                             }
@@ -426,13 +667,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 room_no = Objects.requireNonNull(dataSnapshot.child("room_no").getValue()).toString();
                                 currentRoom.setText(room_no);
                             } catch (NullPointerException e) {
-                                currentRoom.setText("");
+                                try {
+                                    currentRoom.setText("");
+                                }catch (NullPointerException e1){
+                                    e1.printStackTrace();
+                                }
                             }
                             try {
                                 category = Objects.requireNonNull(dataSnapshot.child("category").getValue()).toString();
                                 currentCategory.setText(category);
                             } catch (NullPointerException e) {
-                                currentCategory.setText("");
+                                try {
+                                    currentCategory.setText("");
+                                }catch (NullPointerException e1){
+                                    e1.printStackTrace();
+                                }
                             }
                             setNameAndEmail();
                         }

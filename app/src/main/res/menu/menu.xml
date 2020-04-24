@@ -11,9 +11,10 @@
                 android:onClick="mainScreen"
                 />
             <item
-            android:id="@+id/today"
-            android:icon="@drawable/ic_today_black_24dp"
-            android:title="Today (Coming Soon)"
+                android:id="@+id/today"
+                android:icon="@drawable/ic_today_black_24dp"
+                android:title="Today (Coming Soon)"
+                android:onClick="todaySetUp"
             />
             <item
                 android:id="@+id/week"
