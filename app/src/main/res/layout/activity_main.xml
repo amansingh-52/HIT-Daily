@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:text="@string/application_name"
+    android:background="#a9c6fa"
     tools:context="com.example.hitdaily.MainActivity"
     >
 

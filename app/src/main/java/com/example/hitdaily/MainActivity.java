@@ -1110,6 +1110,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 }
                             }
                             setNameAndEmail();
+                            //setNextView(subject);
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -1149,6 +1150,87 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    public void setNextView(String nowClass){
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        final GenerateId generateId = new GenerateId();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference mdatabaseReference = databaseReference.child("User").child(firebaseUser.getUid());
+        mdatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    dept = dataSnapshot.child("pref").child("dept").getValue().toString();
+                }catch (NullPointerException e){
+                    Toast.makeText(MainActivity.this,"Dept error",Toast.LENGTH_LONG).show();
+                }
+                try {
+                    section = dataSnapshot.child("pref").child("section").getValue().toString();
+                }catch (NullPointerException e){
+                    Toast.makeText(MainActivity.this,"Section error",Toast.LENGTH_LONG).show();
+                }
+                try{
+                    yearString = dataSnapshot.child("pref").child("year").getValue().toString();
+                }catch (NullPointerException e){
+                    Toast.makeText(MainActivity.this,"Year error",Toast.LENGTH_LONG).show();
+                }
+                try {
+                    groupString = dataSnapshot.child("pref").child("group").getValue().toString();
+                }catch (NullPointerException e){
+                    Toast.makeText(MainActivity.this,"Group error",Toast.LENGTH_LONG).show();
+                }
+                TextView classID = (TextView) findViewById(R.id.nextclassId);
+                GenerateClassId generateClassId = new GenerateClassId(dept, section, yearString, groupString);
+                long deptId = generateClassId.dept(dept);
+                long sectionId = generateClassId.section(section);
+                long yearId = generateClassId.year(yearString);
+                long groupId = generateClassId.group(groupString);
+                boolean counter = true;
+                while (counter) {
+                    long timeId = generateId.generate();
+                    timeId++;
+                    final String id = Long.toString(yearId) + Long.toString(deptId) + Long.toString(sectionId) + Long.toString(groupId) + Long.toString(timeId);
+                    try {
+                        DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
+                        dbref = dbref.child("classes").child(id);
+                        dbref.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                try {
+                                    subject = Objects.requireNonNull(dataSnapshot.child("subject").getValue()).toString();
+                                } catch (NullPointerException e) {
+                                   subject="Nan";
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        if (!subject.equals(nowClass)) {
+                            try {
+                                TextView nextSubject = findViewById(R.id.nextSubject);
+                                nextSubject.setText(subject);
+                            } catch (NullPointerException e1) {
+                                e1.printStackTrace();
+                            }
+                            counter = false;
+                        }
+                    }catch (NullPointerException e1){
+                        counter = false;
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     public void setNameAndEmail(){
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         final DatabaseReference mdatabaseReference = databaseReference.child("User").child(firebaseUser.getUid());
