@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     int counter=0;
     boolean nextPressed = false;
     boolean prevPressed = false;
+    boolean initialPress = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             information.name=name.getText().toString();
             information.email=emailID.getText().toString();
-            information.password=password1.getText().toString();
 
             Toast.makeText(this, "Welcome", Toast.LENGTH_SHORT).show();
             firebaseAuth.createUserWithEmailAndPassword(emailID.getText().toString(),password1.getText().toString())
@@ -240,6 +240,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView room8 = findViewById(R.id.category8_textView);
         TextView room9 = findViewById(R.id.category9_textView);
         TextView room10 = findViewById(R.id.category10_textView);
+        TextView time1 = findViewById(R.id.roomNO_textView);
+        TextView time2 = findViewById(R.id.roomNO2_textView);
+        TextView time3 = findViewById(R.id.roomNO3_textView);
+        TextView time4 = findViewById(R.id.roomNO4_textView);
+        TextView time5 = findViewById(R.id.roomNO5_textView);
+        TextView time6 = findViewById(R.id.roomNO6_textView);
+        TextView time7 = findViewById(R.id.roomNO7_textView);
+        TextView time8 = findViewById(R.id.roomNO8_textView);
+        TextView time9 = findViewById(R.id.roomNO9_textView);
+        TextView time10 = findViewById(R.id.roomNO10_textView);
+        TextView center = findViewById(R.id.todayCenter);
         room1.setText("");
         room2.setText("");
         room3.setText("");
@@ -272,6 +283,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         subject10.setText("");
         TextView day = findViewById(R.id.day_TextView);
         GenerateId gid = new GenerateId();
+        if(gid.dayID()==10||gid.dayID()==16)
+        {
+            center.setText("NO CLASSES");
+            time1.setText("");
+            room1.setText("");
+            time2.setText("");
+            room2.setText("");
+            time3.setText("");
+            room3.setText("");
+            time4.setText("");
+            room4.setText("");
+            time5.setText("");
+            room5.setText("");
+            time6.setText("");
+            room6.setText("");
+            time7.setText("");
+            room7.setText("");
+            time8.setText("");
+            room8.setText("");
+            time9.setText("");
+            room9.setText("");
+            time10.setText("");
+            room10.setText("");
+        }
         if(gid.dayID()==10){
             day.setText("SUNDAY");
         }
@@ -430,6 +465,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView subject8 = findViewById(R.id.sub8_view);
         TextView subject9 = findViewById(R.id.sub9_view);
         TextView subject10 = findViewById(R.id.sub10_view);
+        TextView time1 = findViewById(R.id.roomNO_textView);
+        TextView time2 = findViewById(R.id.roomNO2_textView);
+        TextView time3 = findViewById(R.id.roomNO3_textView);
+        TextView time4 = findViewById(R.id.roomNO4_textView);
+        TextView time5 = findViewById(R.id.roomNO5_textView);
+        TextView time6 = findViewById(R.id.roomNO6_textView);
+        TextView time7 = findViewById(R.id.roomNO7_textView);
+        TextView time8 = findViewById(R.id.roomNO8_textView);
+        TextView time9 = findViewById(R.id.roomNO9_textView);
+        TextView time10 = findViewById(R.id.roomNO10_textView);
         TextView teacher1 = findViewById(R.id.teacher_textView);
         TextView teacher2 = findViewById(R.id.teacher2_textView);
         TextView teacher3 = findViewById(R.id.teacher3_textView);
@@ -450,6 +495,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView room8 = findViewById(R.id.category8_textView);
         TextView room9 = findViewById(R.id.category9_textView);
         TextView room10 = findViewById(R.id.category10_textView);
+        TextView center = findViewById(R.id.todayCenter);
         room1.setText("");
         room2.setText("");
         room3.setText("");
@@ -484,6 +530,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         GenerateId gid = new GenerateId();
         int dayNo = gid.dayID();
         dayNo=dayNo+counter;
+        if(dayNo==10||dayNo==16)
+        {
+            center.setText("NO CLASSES");
+            time1.setText("");
+            room1.setText("");
+            time2.setText("");
+            room2.setText("");
+            time3.setText("");
+            room3.setText("");
+            time4.setText("");
+            room4.setText("");
+            time5.setText("");
+            room5.setText("");
+            time6.setText("");
+            room6.setText("");
+            time7.setText("");
+            room7.setText("");
+            time8.setText("");
+            room8.setText("");
+            time9.setText("");
+            room9.setText("");
+            time10.setText("");
+            room10.setText("");
+        }
+        if(dayNo/17>0){
+            return 2;
+        }
         if((dayNo)==10){
             day.setText("SUNDAY");
             return 1;
@@ -507,6 +580,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             day.setText("SATURDAY");
             return 2;
         }
+
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -542,6 +616,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 long groupId = generateClassId.group(groupString);
                 GenerateId generateId = new GenerateId();
                 int dayNumber = generateId.dayID()+counter;
+
                 if(dayNumber<10){
                     dayNumber=16;
                 }
@@ -563,6 +638,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             try {
                                 classes.subject=dataSnapshot.child("subject").getValue().toString();
                             }catch (NullPointerException e){
+                                if(clac==0){
+                                   time1.setText("");
+                                   room1.setText("");}
+                                if(clac==1){
+                                    time2.setText("");
+                                    room2.setText("");}
+                                if(clac==2){
+                                    time3.setText("");
+                                    room3.setText("");}
+                                if(clac==3){
+                                    time4.setText("");
+                                    room4.setText("");}
+                                if(clac==4){
+                                    time5.setText("");
+                                    room5.setText("");}
+                                if(clac==5){
+                                    time6.setText("");
+                                    room6.setText("");}
+                                if(clac==6){
+                                    time7.setText("");
+                                    room7.setText("");}
+                                if(clac==7){
+                                    time8.setText("");
+                                    room8.setText("");}
+                                if(clac==8){
+                                    time9.setText("");
+                                    room9.setText("");}
+                                if(clac==9){
+                                    time10.setText("");
+                                    room10.setText("");}
                                 return;
                             }
                             try {
@@ -701,11 +806,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             counter+=2;
             prevPressed=false;
         }
+        if(!initialPress){
+            counter++;
+            if(gid.dayID()==16){
+                counter=0;
+            }
+        }
+        if(((gid.dayID()+counter)>16)||((gid.dayID()+counter)<10))
+        {
+            counter=0;
+        }
             int value = nextDay(counter);
             if (value == 2) {
                 counter = 10 - gid.dayID();
             } else counter++;
             nextPressed=true;
+            initialPress=true;
     }
     public void prev(View view){
         setDayView();
@@ -714,11 +830,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             counter-=2;
             nextPressed=false;
         }
+        if(!initialPress){
+            counter--;
+        }
+        if(((gid.dayID()+counter)>16)||((gid.dayID()+counter)<10))
+        {   counter=0;
+            return;
+        }
             int value = nextDay(counter);
-            if (value == 1) {
+           if (value == 1) {
                 counter = 16 - gid.dayID();
             } else counter--;
             prevPressed=true;
+            initialPress=true;
         }
 
     public void help(MenuItem menuItem){
@@ -732,6 +856,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
         setNameAndEmail();
+        initialPress=false;
     }
 
     public void uploadData(Users users){
@@ -767,7 +892,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
         setUpHomeScreen();
-
+        initialPress=false;
+        nextPressed=false;
+        prevPressed=false;
     }
     //Function for on click Log In from the menu drawer.
     public void toLogIN(MenuItem item){
@@ -794,6 +921,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final GenerateId generateId = new GenerateId();
         final TextView classTextView = (TextView) findViewById(R.id.classNameText);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference mdbr = databaseReference.child("notice");
+        mdbr.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                TextView notice = findViewById(R.id.notice);
+                try {
+                    notice.setText(dataSnapshot.getValue().toString());
+                }catch (NullPointerException e1){
+                    e1.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         final DatabaseReference mdatabaseReference = databaseReference.child("User").child(firebaseUser.getUid());
         mdatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -862,11 +1006,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     currentSubject.setText("");
                                     ConstraintLayout now = findViewById(R.id.nowlayout);
                                     now.setBackgroundResource(R.drawable.sunday);
-                                    if(generateId.time()==20)
-                                    {
-                                        ConstraintLayout background = findViewById(R.id.buttonNow);
-                                        background.setBackgroundResource(R.drawable.eveningsky);
-                                    }
                                     nowTextView.setText("");
                                     nextText.setText("");
                                     nextTime.setText("");
@@ -883,18 +1022,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     }catch (NullPointerException e1){
                                         e1.printStackTrace();
                                     }
-                                    if(generateId.time()==20)
-                                    {
-                                        ConstraintLayout background = findViewById(R.id.buttonNow);
-                                        background.setBackgroundResource(R.drawable.eveningsky);
+                                    try {
+                                        nowTextView.setText("");
+                                        nextText.setText("");
+                                        nextTime.setText("");
+                                        nextRoom.setText("");
+                                        nextCategory.setText("");
+                                        nextClass.setText("");
+                                        nextTeacher.setText("NO UPCOMING CLASSES");
+                                    }catch (NullPointerException e1){
+                                        e1.printStackTrace();
                                     }
-                                    nowTextView.setText("");
-                                    nextText.setText("");
-                                    nextTime.setText("");
-                                    nextRoom.setText("");
-                                    nextCategory.setText("");
-                                    nextClass.setText("");
-                                    nextTeacher.setText("NO UPCOMING CLASSES");
                                 }
                                 else
                                 {
@@ -921,10 +1059,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 currentTeacher.setText(teacher);
                             } catch (NullPointerException e) {
                                 if(generateId.dayID() == 10){
-                                    currentTeacher.setText("");
+                                    try{
+                                        currentTeacher.setText("");
+                                    }catch (NullPointerException e1){
+                                        e1.printStackTrace();
+                                    }
                                 }
                                 else if(generateId.dayID() == 16){
-                                    currentTeacher.setText("");
+                                    try {
+                                        currentTeacher.setText("");
+                                    }catch (NullPointerException e1){
+                                        e1.printStackTrace();
+                                    }
                                 }
                                 else
                                 {

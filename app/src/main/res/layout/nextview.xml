@@ -119,7 +119,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="34dp"
         android:alpha="2"
-        android:text="All classes are suspended due to COVID-19\n"
+        android:text="."
         android:textAlignment="center"
         android:textColor="#FF0000"
         android:textStyle="bold"

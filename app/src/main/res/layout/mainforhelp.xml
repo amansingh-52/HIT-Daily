@@ -5,6 +5,7 @@
     android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/sky"
     android:text="@string/application_name"
     tools:context="com.example.hitdaily.MainActivity">
 
@@ -12,10 +13,12 @@
         layout="@layout/drawer_toolbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
     <include
         layout="@layout/content_help"
         android:layout_width="wrap_content"
         android:layout_height="0dp" />
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="match_parent"
@@ -23,7 +26,7 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/drawer_header"
-        app:menu="@menu/menu" >
+        app:menu="@menu/menu">
 
     </com.google.android.material.navigation.NavigationView>
 
