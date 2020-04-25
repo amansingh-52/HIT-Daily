@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Users currentUser;
     ProgressBar progressBar;
     int counter=0;
+    boolean nextPressed = false;
+    boolean prevPressed = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -694,19 +696,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void next(View view){
         setDayView();
-       if( nextDay(counter) == 1)
-           counter=0;
-       else if( nextDay(counter) == 2)
-            counter=0;
-        else counter++;
-
+        GenerateId gid = new GenerateId();
+        if(prevPressed){
+            counter+=2;
+            prevPressed=false;
+        }
+            int value = nextDay(counter);
+            if (value == 2) {
+                counter = 10 - gid.dayID();
+            } else counter++;
+            nextPressed=true;
     }
     public void prev(View view){
-        counter--;
         setDayView();
-        nextDay(counter);
-    }
-
+        GenerateId gid = new GenerateId();
+        if(nextPressed){
+            counter-=2;
+            nextPressed=false;
+        }
+            int value = nextDay(counter);
+            if (value == 1) {
+                counter = 16 - gid.dayID();
+            } else counter--;
+            prevPressed=true;
+        }
 
     public void help(MenuItem menuItem){
         setContentView(R.layout.mainforhelp);
@@ -863,9 +876,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     nextTeacher.setText("NO UPCOMING CLASSES");
                                 }
                                 else if(generateId.dayID() == 16){
-                                    currentSubject.setText("");
-                                    ConstraintLayout now = findViewById(R.id.nowlayout);
-                                    now.setBackgroundResource(R.drawable.saturday);
+                                    try {
+                                        currentSubject.setText("");
+                                        ConstraintLayout now = findViewById(R.id.nowlayout);
+                                        now.setBackgroundResource(R.drawable.saturday);
+                                    }catch (NullPointerException e1){
+                                        e1.printStackTrace();
+                                    }
                                     if(generateId.time()==20)
                                     {
                                         ConstraintLayout background = findViewById(R.id.buttonNow);
