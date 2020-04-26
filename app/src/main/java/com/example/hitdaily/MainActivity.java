@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void logout(MenuItem menuItem){
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
-      builder.setMessage("Do you want to Logout?");
+      builder.setMessage("Do you want to logout?");
       builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
       builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
-              launch();
               dialog.cancel();
           }
       });
@@ -890,10 +889,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
     public void profilePictureClicked(View view){
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent,PICK_IMAGE_REQUEST);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Do you want to upload image?");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ProgressBar progressBar = findViewById(R.id.uploadProgressBar);
+                progressBar.setVisibility(View.VISIBLE);
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent,PICK_IMAGE_REQUEST);
+                dialog.cancel();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     @Override
@@ -999,6 +1016,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             e.printStackTrace();
         }
     }
+
+    private void setUserInfo(){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        final DatabaseReference mdatabaseReference = databaseReference.child("User").child(firebaseUser.getUid());
+        mdatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    dept = dataSnapshot.child("pref").child("dept").getValue().toString();
+                } catch (NullPointerException e) {
+                    Toast.makeText(MainActivity.this, "Dept error", Toast.LENGTH_LONG).show();
+                }
+                try {
+                    section = dataSnapshot.child("pref").child("section").getValue().toString();
+                    if(section.equals("N/A")){
+                        section="";
+                    }
+                } catch (NullPointerException e) {
+                    Toast.makeText(MainActivity.this, "Section error", Toast.LENGTH_LONG).show();
+                }
+                try {
+                    yearString = dataSnapshot.child("pref").child("year").getValue().toString();
+                } catch (NullPointerException e) {
+                    Toast.makeText(MainActivity.this, "Year error", Toast.LENGTH_LONG).show();
+                }
+                try {
+                    groupString = dataSnapshot.child("pref").child("group").getValue().toString();
+                } catch (NullPointerException e) {
+                    Toast.makeText(MainActivity.this, "Group error", Toast.LENGTH_LONG).show();
+                }
+                try {
+                    TextView userInfo = findViewById(R.id.p_UserInfo);
+                    userInfo.setText(dept + " -" + section + " \"" + groupString + "\" (" + yearString + ")");
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                }
+            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
+
     private String getFileExtension (Uri uri){
         ContentResolver cR = getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
@@ -1035,8 +1100,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //Function for on click Log In from the menu drawer.
     public void toLogIN(MenuItem item){
 
-        setContentView(R.layout.pref);
-        setSpinner();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Do you want to change preference?");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                setContentView(R.layout.pref);
+                setSpinner();
+                dialog.cancel();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
 
     }
 
@@ -1418,6 +1499,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     public void viewProfile(MenuItem menuItem){
         setContentView(R.layout.mainforprofile);
+        ProgressBar progressBar = findViewById(R.id.uploadProgressBar);
+        progressBar.setVisibility(View.GONE);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer);
@@ -1427,6 +1510,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
         setNameAndEmail();
+        setUserInfo();
         setNameAndEmailProfile();
         setImage();
         setProfileImageDrawer();
