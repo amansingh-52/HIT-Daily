@@ -1,6 +1,7 @@
 package com.example.hitdaily;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +25,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -31,17 +34,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     FirebaseAuth firebaseAuth;
@@ -66,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     boolean nextPressed = false;
     boolean prevPressed = false;
     boolean initialPress = false;
+    public static final int PICK_IMAGE_REQUEST=1;
+    Uri mImageUri;
+    StorageReference storageReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -868,6 +878,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
+    public void profilePictureClicked(View view){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent,PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK &&
+             data != null && data.getData() != null){
+            mImageUri =data.getData();
+            CircleImageView circleImageView = findViewById(R.id.p_profileImage);
+            circleImageView.setImageURI(mImageUri);
+            storageReference = FirebaseStorage.getInstance().getReference(firebaseUser.getUid());
+            CircleImageView drawerImage = findViewById(R.id.drawerImage);
+            drawerImage.setImageURI(mImageUri);
+        }
+    }
 
     public void mainScreen (MenuItem menuItem){
         launch();
@@ -1231,6 +1261,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
+    public void setNameAndEmailProfile(){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference mdatabaseReference = databaseReference.child("User").child(firebaseUser.getUid());
+        mdatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                TextView userEmailTextView = findViewById(R.id.p_emaiId);
+                TextView userNameTextView = findViewById(R.id.p_UserName);
+                try {
+                    userNameTextView.setText(dataSnapshot.child("info").child("name").getValue().toString());
+                    userEmailTextView.setText(dataSnapshot.child("info").child("email").getValue().toString());
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     public void setNameAndEmail(){
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         final DatabaseReference mdatabaseReference = databaseReference.child("User").child(firebaseUser.getUid());
@@ -1253,7 +1305,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
-
+    public void viewProfile(MenuItem menuItem){
+        setContentView(R.layout.mainforprofile);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        drawerLayout = findViewById(R.id.drawer);
+        navigationView = findViewById(R.id.navigation_view);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        actionBarDrawerToggle.syncState();
+        setNameAndEmail();
+        setNameAndEmailProfile();
+        initialPress=false;
+        nextPressed=false;
+        prevPressed=false;
+    }
     public void setSpinner(){
         final Spinner spinner1 = findViewById(R.id.deptSpinner);
         final Spinner spinner2 = findViewById(R.id.sectionSpinner);

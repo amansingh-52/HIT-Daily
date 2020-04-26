@@ -2,7 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/main"
-        android:title="Menu">
+        android:title="Menu"
+        >
         <menu>
             <item
                 android:id="@+id/now"
@@ -48,6 +49,11 @@
                 android:icon="@drawable/ic_edit_black_24dp"
                 android:title="Edit preference"
                 android:onClick="toLogIN"
+                />
+            <item
+                android:icon="@drawable/ic_account_box_black_24dp"
+                android:title="My Profile"
+                android:onClick="viewProfile"
                 />
             <item
 
