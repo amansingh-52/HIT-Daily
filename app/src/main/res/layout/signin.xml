@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/sky"
     android:orientation="vertical">
 
     <EditText
@@ -40,11 +40,11 @@
         android:layout_width="112dp"
         android:layout_height="90dp"
         android:layout_marginTop="40dp"
+        android:contentDescription="@string/application_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/icon"
-        android:contentDescription="@string/application_name"/>
+        app:srcCompat="@mipmap/icon" />
 
     <TextView
         android:id="@+id/textView"
@@ -61,8 +61,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
-        android:text="@string/common_signin_button_text"
         android:onClick="login"
+        android:text="@string/common_signin_button_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordSignIn" />
@@ -85,8 +85,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Sign Up"
         android:onClick="signUp"
+        android:text="Sign Up"
         android:textColor="@android:color/holo_blue_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -18,7 +18,10 @@ import java.util.List;
 import java.util.Objects;
 
 import com.example.myapplication.R;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthResult;
@@ -26,9 +29,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,6 +45,7 @@ import android.preference.PreferenceManager;
 import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -76,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int PICK_IMAGE_REQUEST=1;
     Uri mImageUri;
     StorageReference storageReference;
+    DatabaseReference myDataBase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -803,6 +812,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
         setNameAndEmail();
+        setProfileImageDrawer();
     }
     public void todaySetUp(MenuItem menuItem){
         setDayView();
@@ -866,6 +876,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
         setNameAndEmail();
+        setProfileImageDrawer();
         initialPress=false;
     }
 
@@ -893,10 +904,105 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mImageUri =data.getData();
             CircleImageView circleImageView = findViewById(R.id.p_profileImage);
             circleImageView.setImageURI(mImageUri);
-            storageReference = FirebaseStorage.getInstance().getReference(firebaseUser.getUid());
-            CircleImageView drawerImage = findViewById(R.id.drawerImage);
-            drawerImage.setImageURI(mImageUri);
+            storageReference = FirebaseStorage.getInstance().getReference("profile");
+            uploadImage();
         }
+    }
+
+    private  void uploadImage(){
+        if(mImageUri != null){
+            StorageReference storageReference1 = storageReference.child(firebaseUser.getUid()+"."+getFileExtension(mImageUri));
+            ProgressBar uploadProgressBar = findViewById(R.id.uploadProgressBar);
+            uploadProgressBar.setVisibility(View.VISIBLE);
+            UploadTask uploadTask =  storageReference1.putFile(mImageUri);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    myDataBase =FirebaseDatabase.getInstance().getReference("User");
+                    DatabaseReference userDataBase = myDataBase.child(firebaseUser.getUid()).child("profile image");
+                    ProgressBar uploadProgressBar = findViewById(R.id.uploadProgressBar);
+                    uploadProgressBar.setVisibility(View.GONE);
+                    storageReference1.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String url = uri.toString();
+                            Toast.makeText(MainActivity.this,"Uploaded!",Toast.LENGTH_LONG).show();
+                            ImageUpload imageUpload = new ImageUpload("profile url",url);
+                            userDataBase.setValue(imageUpload);
+                            setProfileImageDrawer();
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(MainActivity.this,"Unable to upload",Toast.LENGTH_SHORT).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                    ProgressBar uploadProgressBar = findViewById(R.id.uploadProgressBar);
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()/ taskSnapshot.getTotalByteCount());
+                    uploadProgressBar.setProgress((int) progress);
+                }
+            });
+        }else {
+            Toast.makeText(this,"Invalid image",Toast.LENGTH_LONG).show();
+        }
+    }
+    private void setProfileImageDrawer(){
+        myDataBase =FirebaseDatabase.getInstance().getReference("User");
+        try {
+            DatabaseReference userDataBase = myDataBase.child(firebaseUser.getUid()).child("profile image").child("mImageUri");
+            userDataBase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    CircleImageView drawerImage = findViewById(R.id.drawerImage);
+                    try {
+                        Picasso.get().load(dataSnapshot.getValue().toString()).into(drawerImage);
+                    }catch (NullPointerException e){
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(MainActivity.this,"Error",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void setImage(){
+        myDataBase =FirebaseDatabase.getInstance().getReference("User");
+        try {
+            DatabaseReference userDataBase = myDataBase.child(firebaseUser.getUid()).child("profile image").child("mImageUri");
+            userDataBase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    CircleImageView drawerImage = findViewById(R.id.p_profileImage);
+                    try {
+                        Picasso.get().load(dataSnapshot.getValue().toString()).into(drawerImage);
+                    }catch (NullPointerException e){
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(MainActivity.this,"Error",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    private String getFileExtension (Uri uri){
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(cR.getType(uri));
     }
 
     public void mainScreen (MenuItem menuItem){
@@ -949,6 +1055,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         firebaseUser = firebaseAuth.getCurrentUser();
         final TextView time = findViewById(R.id.timeTextView);
         final GenerateId generateId = new GenerateId();
+        setProfileImageDrawer();
         final TextView classTextView = (TextView) findViewById(R.id.classNameText);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         DatabaseReference mdbr = databaseReference.child("notice");
@@ -1033,16 +1140,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 currentSubject.setText(subject);
                             } catch (NullPointerException e) {
                                 if(generateId.dayID() == 10){
-                                    currentSubject.setText("");
-                                    ConstraintLayout now = findViewById(R.id.nowlayout);
-                                    now.setBackgroundResource(R.drawable.sunday);
-                                    nowTextView.setText("");
-                                    nextText.setText("");
-                                    nextTime.setText("");
-                                    nextRoom.setText("");
-                                    nextCategory.setText("");
-                                    nextClass.setText("");
-                                    nextTeacher.setText("NO UPCOMING CLASSES");
+                                    try {
+                                        currentSubject.setText("");
+                                        ConstraintLayout now = findViewById(R.id.nowlayout);
+                                        now.setBackgroundResource(R.drawable.sunday);
+                                        nowTextView.setText("");
+                                        nextText.setText("");
+                                        nextTime.setText("");
+                                        nextRoom.setText("");
+                                        nextCategory.setText("");
+                                        nextClass.setText("");
+                                        nextTeacher.setText("NO UPCOMING CLASSES");
+                                    }catch (NullPointerException e1){
+                                        e1.printStackTrace();
+                                    }
                                 }
                                 else if(generateId.dayID() == 16){
                                     try {
@@ -1317,6 +1428,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.syncState();
         setNameAndEmail();
         setNameAndEmailProfile();
+        setImage();
+        setProfileImageDrawer();
         initialPress=false;
         nextPressed=false;
         prevPressed=false;
