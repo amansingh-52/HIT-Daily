@@ -10,6 +10,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,13 +38,16 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +63,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     FirebaseAuth firebaseAuth;
@@ -85,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Uri mImageUri;
     StorageReference storageReference;
     DatabaseReference myDataBase;
+    Bitmap bitmap = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -877,6 +885,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setNameAndEmail();
         setProfileImageDrawer();
         initialPress=false;
+        nextPressed=false;
+        prevPressed=false;
     }
 
     public void uploadData(Users users){
@@ -894,8 +904,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ProgressBar progressBar = findViewById(R.id.uploadProgressBar);
-                progressBar.setVisibility(View.VISIBLE);
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -919,19 +927,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK &&
              data != null && data.getData() != null){
             mImageUri =data.getData();
-            CircleImageView circleImageView = findViewById(R.id.p_profileImage);
-            circleImageView.setImageURI(mImageUri);
-            storageReference = FirebaseStorage.getInstance().getReference("profile");
-            uploadImage();
+
+            try {
+                storageReference = FirebaseStorage.getInstance().getReference("profile");
+                Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(),mImageUri);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.JPEG,40,byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream.toByteArray();
+                uploadImage(byteArray);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private  void uploadImage(){
+    private  void uploadImage(byte[] bytes){
+        ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
         if(mImageUri != null){
             StorageReference storageReference1 = storageReference.child(firebaseUser.getUid()+"."+getFileExtension(mImageUri));
             ProgressBar uploadProgressBar = findViewById(R.id.uploadProgressBar);
             uploadProgressBar.setVisibility(View.VISIBLE);
-            UploadTask uploadTask =  storageReference1.putFile(mImageUri);
+            UploadTask uploadTask =  storageReference1.putBytes(bytes);
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -942,6 +958,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     storageReference1.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
+                            progressDialog.dismiss();
                             String url = uri.toString();
                             Toast.makeText(MainActivity.this,"Uploaded!",Toast.LENGTH_LONG).show();
                             ImageUpload imageUpload = new ImageUpload("profile url",url);
@@ -953,14 +970,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    progressDialog.dismiss();
                     Toast.makeText(MainActivity.this,"Unable to upload",Toast.LENGTH_SHORT).show();
                 }
             }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                    ProgressBar uploadProgressBar = findViewById(R.id.uploadProgressBar);
                     double progress = (100.0 * taskSnapshot.getBytesTransferred()/ taskSnapshot.getTotalByteCount());
-                    uploadProgressBar.setProgress((int) progress);
+                    progressDialog.show();
+                    ProgressBar progressBar = findViewById(R.id.uploadProgressBar);
+                    progressBar.setVisibility(View.VISIBLE);
+                    progressBar.setProgress((int) progress);
+                    progressDialog.setMessage("Uploading image");
+                    progressDialog.setCancelable(false);
                 }
             });
         }else {
@@ -1304,7 +1326,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     }
                                     else
                                         try {
-                                            currentTeacher.setText("Please contactmeemail at amansingh8066@gmail.com\nKindly send your class routine");
+                                            currentTeacher.setText("");
                                         }catch (NullPointerException e1){
                                             e1.printStackTrace();
                                         }
@@ -1370,6 +1392,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
+    }
+
+    public void setAbout(MenuItem menuItem){
+        setContentView(R.layout.mainforabout);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        drawerLayout = findViewById(R.id.drawer);
+        navigationView = findViewById(R.id.navigation_view);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        actionBarDrawerToggle.syncState();
+        setNameAndEmail();
+        setProfileImageDrawer();
+        initialPress=false;
+        nextPressed=false;
+        prevPressed=false;
     }
 
     public void setNextView(String nowClass){

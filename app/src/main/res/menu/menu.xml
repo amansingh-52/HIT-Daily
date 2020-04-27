@@ -14,10 +14,21 @@
             <item
                 android:id="@+id/today"
                 android:icon="@drawable/ic_today_black_24dp"
-                android:title="Today"
+                android:title="Routine"
                 android:onClick="todaySetUp"
             />
 
+        </menu>
+    </item>
+    <item
+        android:id="@+id/attendanceManager"
+        android:title="Attendance Manager">
+        <menu>
+            <item
+                android:id="@+id/attendanceManager1"
+                android:icon="@drawable/ic_storage_black_24dp"
+                android:title="Attendance Manager"
+                />
         </menu>
     </item>
     <item
@@ -71,6 +82,12 @@
             android:icon="@drawable/ic_live_help_black_24dp"
             android:title="Help"
             android:onClick="help"
+            />
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/ic_info_black_24dp"
+            android:title="About HIT Daily"
+            android:onClick="setAbout"
             />
     </menu>
 </item>
