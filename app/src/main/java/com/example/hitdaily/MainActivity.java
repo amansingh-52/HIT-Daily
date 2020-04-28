@@ -2,18 +2,14 @@ package com.example.hitdaily;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.graphics.PathUtils;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -45,13 +41,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.drawable.GradientDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.renderscript.ScriptGroup;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -82,6 +75,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String teacher;
     String room_no;
     String category;
+    String nextSubjectString;
+    String nextTeacherString;
+    String nextRoom_noString;
+    String nextCategoryString;
+    int classCounter = 0;
     Users currentUser;
     ProgressBar progressBar;
     int counter=0;
@@ -89,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     boolean prevPressed = false;
     boolean initialPress = false;
     boolean toolbarImageClicked = false;
+    boolean nextClassCounter = true;
     public static final int PICK_IMAGE_REQUEST=1;
     public static final int PICK_IMAGE_REQUEST_INITIAL=2;
     Uri mImageUri;
@@ -173,8 +172,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             information.name=name.getText().toString();
             information.email=emailID.getText().toString();
-
-            Toast.makeText(this, "Welcome", Toast.LENGTH_SHORT).show();
             firebaseAuth.createUserWithEmailAndPassword(emailID.getText().toString(),password1.getText().toString())
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -185,12 +182,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 databaseReference.child("User").child(firebaseUser.getUid()).child("info").setValue(information).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
+                                        Toast.makeText(MainActivity.this, "Welcome", Toast.LENGTH_SHORT).show();
                                         setContentView(R.layout.getprofileimage);
                                     }
                                 });
                             }
                         }
-                    });
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(MainActivity.this,"Email already used!",Toast.LENGTH_LONG).show();
+                }
+            });
         }
         else{
             Toast.makeText(this,"Password didn't match\nPlease re enter",Toast.LENGTH_LONG).show();
@@ -213,24 +216,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     * if yes then launches logout function.
     **/
     public void logout(MenuItem menuItem){
+        logout();
+    }
+
+    private  void logout(){
         toolbarImageClicked = false;
-      AlertDialog.Builder builder = new AlertDialog.Builder(this);
-      builder.setMessage("Do you want to logout?");
-      builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-              logOut();
-              dialog.cancel();
-          }
-      });
-      builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-              dialog.cancel();
-          }
-      });
-      AlertDialog alertDialog = builder.create();
-      alertDialog.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Do you want to logout?");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                logOut();
+                dialog.cancel();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    public void logout(View view){
+        logout();
     }
 
     /**
@@ -1197,7 +1208,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(requestCode == PICK_IMAGE_REQUEST_INITIAL && resultCode == RESULT_OK &&
                 data != null && data.getData() != null){
             mImageUri =data.getData();
-
+            CircleImageView profileImage = findViewById(R.id.circleImageView);
+            profileImage.setImageURI(mImageUri);
             try {
                 storageReference = FirebaseStorage.getInstance().getReference("profile");
                 Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(),mImageUri);
@@ -1328,7 +1340,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(MainActivity.this,"Error",Toast.LENGTH_SHORT).show();
                 }
             });
         }catch (Exception e){
@@ -1353,7 +1364,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(MainActivity.this,"Error",Toast.LENGTH_SHORT).show();
                 }
             });
         }catch (Exception e){
@@ -1381,7 +1391,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(MainActivity.this,"Error",Toast.LENGTH_SHORT).show();
                 }
             });
         }catch (Exception e){
@@ -1746,7 +1755,84 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 }
                             }
                             setNameAndEmail();
-                            //setNextView(subject);
+                            int i=1;
+                            GenerateId generateId1 = new GenerateId();
+                            do{
+                                try {
+                                    final int nextTimeId = (int) timeId+i++;
+                                    final String nextId = Long.toString(yearId) + Long.toString(deptId) + Long.toString(sectionId) + Long.toString(groupId) + Integer.toString(nextTimeId);
+                                    TextView nextClassId = findViewById(R.id.nextclassId);
+                                    nextClassId.setText(nextId);
+                                    DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
+                                    dbref = dbref.child("classes").child(nextId);
+                                    dbref.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            try {
+                                                nextSubjectString = Objects.requireNonNull(dataSnapshot.child("subject").getValue()).toString();
+                                                if(!nextSubjectString.equals(subject)) {
+                                                    try {
+                                                        nextClass.setText(nextSubjectString);
+                                                    }catch (NullPointerException e1){
+                                                        e1.printStackTrace();
+                                                    }
+                                                    nextClassCounter=false;
+                                                    classCounter=0;
+                                                }
+                                                else {
+                                                    try {
+                                                        nextClass.setText("");
+                                                        String display = "No more classes";
+                                                        nextTeacher.setText(display.toUpperCase());
+                                                        nextRoom.setText("");
+                                                        nextCategory.setText("");
+                                                    }catch (NullPointerException e1){
+                                                        e1.printStackTrace();
+                                                    }
+                                                    nextClassCounter=true;
+                                                    return;
+                                                }
+                                            } catch (NullPointerException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                            try {
+                                                nextTeacherString = Objects.requireNonNull(dataSnapshot.child("teacher").getValue()).toString();
+                                                nextTeacher.setText(nextTeacherString);
+                                            } catch (NullPointerException e) {
+                                                e.printStackTrace();
+                                            }
+                                            try {
+                                                nextRoom_noString = Objects.requireNonNull(dataSnapshot.child("room_no").getValue()).toString();
+                                                nextRoom.setText(nextRoom_noString);
+                                            } catch (NullPointerException e) {
+                                                try {
+                                                    nextRoom.setText("");
+                                                }catch (NullPointerException e1){
+                                                    e1.printStackTrace();
+                                                }
+                                            }
+                                            try {
+                                                nextCategoryString = Objects.requireNonNull(dataSnapshot.child("category").getValue()).toString();
+                                                nextCategory.setText(nextCategoryString);
+                                            } catch (NullPointerException e) {
+                                                try {
+                                                    nextCategory.setText("");
+                                                }catch (NullPointerException e1){
+                                                    e1.printStackTrace();
+                                                }
+                                            }
+                                        }
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                } catch (NullPointerException e) {
+                                    e.printStackTrace();
+                                }
+                            }while(nextClassCounter&&(generateId1.time()+i<20));
+
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -1818,91 +1904,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nextPressed=false;
         prevPressed=false;
     }
-    /**
-     * WIP
-     * */
-    public void setNextView(String nowClass){
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
-        final GenerateId generateId = new GenerateId();
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        final DatabaseReference mdatabaseReference = databaseReference.child("User").child(firebaseUser.getUid());
-        mdatabaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
-                    dept = dataSnapshot.child("pref").child("dept").getValue().toString();
-                }catch (NullPointerException e){
-                    Toast.makeText(MainActivity.this,"Dept error",Toast.LENGTH_LONG).show();
-                }
-                try {
-                    section = dataSnapshot.child("pref").child("section").getValue().toString();
-                }catch (NullPointerException e){
-                    Toast.makeText(MainActivity.this,"Section error",Toast.LENGTH_LONG).show();
-                }
-                try{
-                    yearString = dataSnapshot.child("pref").child("year").getValue().toString();
-                }catch (NullPointerException e){
-                    Toast.makeText(MainActivity.this,"Year error",Toast.LENGTH_LONG).show();
-                }
-                try {
-                    groupString = dataSnapshot.child("pref").child("group").getValue().toString();
-                }catch (NullPointerException e){
-                    Toast.makeText(MainActivity.this,"Group error",Toast.LENGTH_LONG).show();
-                }
-                TextView classID = (TextView) findViewById(R.id.nextclassId);
-                GenerateClassId generateClassId = new GenerateClassId(dept, section, yearString, groupString);
-                long deptId = generateClassId.dept(dept);
-                long sectionId = generateClassId.section(section);
-                long yearId = generateClassId.year(yearString);
-                long groupId = generateClassId.group(groupString);
-                boolean counter = true;
-                while (counter) {
-                    long timeId = generateId.generate();
-                    timeId++;
-                    final String id = Long.toString(yearId) + Long.toString(deptId) + Long.toString(sectionId) + Long.toString(groupId) + Long.toString(timeId);
-                    try {
-                        DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
-                        dbref = dbref.child("classes").child(id);
-                        dbref.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                try {
-                                    subject = Objects.requireNonNull(dataSnapshot.child("subject").getValue()).toString();
-                                } catch (NullPointerException e) {
-                                   subject="Nan";
-                                }
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        if (!subject.equals(nowClass)) {
-                            try {
-                                TextView nextSubject = findViewById(R.id.nextSubject);
-                                nextSubject.setText(subject);
-                            } catch (NullPointerException e1) {
-                                e1.printStackTrace();
-                            }
-                            counter = false;
-                        }
-                    }catch (NullPointerException e1){
-                        counter = false;
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
     /**
      * Set up name and email to Profile
      * */
