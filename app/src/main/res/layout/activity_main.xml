@@ -10,9 +10,15 @@
     tools:context="com.example.hitdaily.MainActivity"
     >
 
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/sky">
+
     <RelativeLayout
            android:layout_width="match_parent"
-           android:layout_height="match_parent">
+           android:layout_height="wrap_content">
 
         <include
             layout="@layout/content_main"
@@ -35,8 +41,8 @@
         <include
 
             layout="@layout/nextview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="334dp"
+            android:layout_height="233dp"
             android:layout_below="@+id/nowlayout"
             android:layout_marginLeft="30sp"
             android:layout_marginTop="50dp"
@@ -49,6 +55,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </RelativeLayout>
+
+    </ScrollView>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"

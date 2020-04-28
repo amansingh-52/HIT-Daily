@@ -5,7 +5,7 @@
     android:id="@+id/buttonNow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/sky"
+    android:background="@android:color/transparent"
     android:text="TIME"
     tools:context="com.example.hitdaily.MainActivity">
 

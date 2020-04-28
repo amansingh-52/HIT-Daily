@@ -8,16 +8,18 @@
     android:background="@drawable/sky"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="112dp"
-        android:layout_height="90dp"
-        android:layout_marginTop="40dp"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imageView234"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:layout_marginTop="100dp"
         android:contentDescription="@string/application_name"
+        android:src="@mipmap/icon"
+        app:civ_border_color="@color/skyColor"
+        app:civ_border_width="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/icon" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView"
@@ -27,27 +29,27 @@
         android:text="@string/application_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView234" />
 
     <TextView
         android:id="@+id/year"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="266dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
         android:gravity="center"
         android:text="Year"
         android:textAlignment="center"
         android:textSize="16sp"
         android:textStyle="italic"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <TextView
         android:id="@+id/dept"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="45sp"
         android:gravity="center"
         android:text="Department"
@@ -61,7 +63,7 @@
         android:id="@+id/section"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="45sp"
         android:gravity="center"
         android:text="Section"
@@ -75,7 +77,7 @@
         android:id="@+id/group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="45sp"
         android:gravity="center"
         android:text="Group"
@@ -89,10 +91,10 @@
         android:id="@+id/yearSpinner"
         android:layout_width="150sp"
         android:layout_height="0dp"
-        android:layout_marginTop="102dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="70dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <Spinner
         android:id="@+id/deptSpinner"
@@ -121,17 +123,33 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sectionSpinner" />
 
-    <ImageButton
+    <androidx.cardview.widget.CardView
         android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="131dp"
-        android:hapticFeedbackEnabled="true"
+        android:layout_width="175dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="335dp"
+        android:background="@color/skyColor"
         android:onClick="toHome"
+        app:cardBackgroundColor="#e0286f"
+        app:cardCornerRadius="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/groupSpinner"
-        app:srcCompat="@android:drawable/ic_menu_save" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:alpha=".7"
+                android:text="Save"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/textView4"

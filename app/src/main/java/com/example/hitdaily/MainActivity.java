@@ -2,15 +2,20 @@ package com.example.hitdaily;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.graphics.PathUtils;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -43,8 +48,10 @@ import android.graphics.Matrix;
 import android.graphics.drawable.GradientDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.renderscript.ScriptGroup;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -81,7 +88,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     boolean nextPressed = false;
     boolean prevPressed = false;
     boolean initialPress = false;
+    boolean toolbarImageClicked = false;
     public static final int PICK_IMAGE_REQUEST=1;
+    public static final int PICK_IMAGE_REQUEST_INITIAL=2;
     Uri mImageUri;
     StorageReference storageReference;
     DatabaseReference myDataBase;
@@ -106,6 +115,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
+     * Set view to take profile image.
+     * */
+    public void setProfileImageLayout(View view){
+        createUser();
+    }
+
+    /**
      *Launches login page
      */
 
@@ -125,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     * If correct then creates the user,
     * then uploads the user name, email id and password to the database.
     * */
-    public void createUser(View view){
+    public void createUser(){
         EditText emailID = findViewById(R.id.emailEditText);
         EditText password1 = findViewById(R.id.password);
         EditText password2 = findViewById(R.id.passwordReCheck);
@@ -169,14 +185,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 databaseReference.child("User").child(firebaseUser.getUid()).child("info").setValue(information).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        Toast.makeText(MainActivity.this,"All set !",Toast.LENGTH_LONG).show();
+                                        setContentView(R.layout.getprofileimage);
                                     }
                                 });
                             }
                         }
                     });
-            setContentView(R.layout.pref);
-            setSpinner();
         }
         else{
             Toast.makeText(this,"Password didn't match\nPlease re enter",Toast.LENGTH_LONG).show();
@@ -189,11 +203,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void setPreferenceLayout(View view){
+        setContentView(R.layout.pref);
+        setSpinner();
+    }
+
     /**
     * Gives a alert dialog to user when logout is clicked from the menu item,
     * if yes then launches logout function.
     **/
     public void logout(MenuItem menuItem){
+        toolbarImageClicked = false;
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
       builder.setMessage("Do you want to logout?");
       builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
@@ -964,6 +984,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          * Directs user to Heritage Institute of Technology's official web site.
          * */
         public void collegeSite(MenuItem menuItem){
+            toolbarImageClicked = false;
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.heritageit.edu/"));
             startActivity(intent);
         }
@@ -972,6 +993,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          * Directs user to Heritage Institute of Technology's official web site's notice section.
          * */
         public void noticeSite(MenuItem menuItem){
+            toolbarImageClicked = false;
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.heritageit.edu/Notice.aspx"));
             startActivity(intent);
         }
@@ -980,6 +1002,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          * Directs user to Heritage Institute of Technology's official web site's examination section.
          * */
         public void examinationSite(MenuItem menuItem){
+            toolbarImageClicked = false;
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.heritageit.edu/ExamCell.aspx"));
             startActivity(intent);
         }
@@ -1015,12 +1038,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.syncState();
         setNameAndEmail();
         setProfileImageDrawer();
+        setProfileImageToolbar();
     }
 
     /**
      * Launches routine from today routine.
      * */
     public void todaySetUp(MenuItem menuItem){
+        toolbarImageClicked = false;
         setDayView();
         today();
     }
@@ -1082,6 +1107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          * Launches help page and setup drawerLayout.
          * */
         public void help(MenuItem menuItem){
+            toolbarImageClicked = false;
             setContentView(R.layout.mainforhelp);
             toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
@@ -1093,6 +1119,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             actionBarDrawerToggle.syncState();
             setNameAndEmail();
             setProfileImageDrawer();
+            setProfileImageToolbar();
             initialPress=false;
             nextPressed=false;
             prevPressed=false;
@@ -1110,6 +1137,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(MainActivity.this,"All set !",Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public void setInitialProfileImage(View view){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent,PICK_IMAGE_REQUEST_INITIAL);
     }
 
     /**
@@ -1147,6 +1181,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK &&
              data != null && data.getData() != null){
+                mImageUri =data.getData();
+                storageReference = FirebaseStorage.getInstance().getReference("profile");
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
+                    Bitmap bmp = handleImageOrientation();
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    bmp.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream);
+                    byte[] byteArray = byteArrayOutputStream.toByteArray();
+                    uploadImage(byteArray);
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+        }
+        if(requestCode == PICK_IMAGE_REQUEST_INITIAL && resultCode == RESULT_OK &&
+                data != null && data.getData() != null){
             mImageUri =data.getData();
 
             try {
@@ -1155,10 +1204,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 bmp.compress(Bitmap.CompressFormat.JPEG,40,byteArrayOutputStream);
                 byte[] byteArray = byteArrayOutputStream.toByteArray();
-                uploadImage(byteArray);
+                uploadInitialImage(byteArray);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+    }
+
+    private void uploadInitialImage(byte[] bytes){
+        ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+        if(mImageUri != null){
+            StorageReference storageReference1 = storageReference.child(firebaseUser.getUid()+"."+getFileExtension(mImageUri));
+            UploadTask uploadTask =  storageReference1.putBytes(bytes);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    myDataBase =FirebaseDatabase.getInstance().getReference("User");
+                    DatabaseReference userDataBase = myDataBase.child(firebaseUser.getUid()).child("profile image");
+                    storageReference1.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            progressDialog.dismiss();
+                            String url = uri.toString();
+                            Toast.makeText(MainActivity.this,"Uploaded!",Toast.LENGTH_LONG).show();
+                            ImageUpload imageUpload = new ImageUpload("profile url",url);
+                            userDataBase.setValue(imageUpload);
+                            setContentView(R.layout.pref);
+                            setSpinner();
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressDialog.dismiss();
+                    Toast.makeText(MainActivity.this,"Unable to upload",Toast.LENGTH_SHORT).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                    progressDialog.show();
+                    progressDialog.setMessage("Uploading image");
+                    progressDialog.setCancelable(false);
+                }
+            });
+        }
+        else {
+            Toast.makeText(this,"Invalid image",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -1188,6 +1281,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             ImageUpload imageUpload = new ImageUpload("profile url",url);
                             userDataBase.setValue(imageUpload);
                             setProfileImageDrawer();
+                            setProfileImageToolbar();
                         }
                     });
                 }
@@ -1225,6 +1319,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     CircleImageView drawerImage = findViewById(R.id.drawerImage);
+                    try {
+                        Picasso.get().load(dataSnapshot.getValue().toString()).into(drawerImage);
+                    }catch (NullPointerException e){
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(MainActivity.this,"Error",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void setProfileImageToolbar(){
+        myDataBase =FirebaseDatabase.getInstance().getReference("User");
+        try {
+            DatabaseReference userDataBase = myDataBase.child(firebaseUser.getUid()).child("profile image").child("mImageUri");
+            userDataBase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    CircleImageView drawerImage = findViewById(R.id.toolbarImage);
                     try {
                         Picasso.get().load(dataSnapshot.getValue().toString()).into(drawerImage);
                     }catch (NullPointerException e){
@@ -1333,6 +1452,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Launches home screen
      * */
     public void mainScreen (MenuItem menuItem){
+
+        toolbarImageClicked = false;
         launch();
     }
 
@@ -1375,12 +1496,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Launches preference to change it from menu item
      * */
     public void toLogIN(MenuItem item){
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Do you want to change preference?");
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                toolbarImageClicked = false;
                 setContentView(R.layout.pref);
                 setSpinner();
                 dialog.cancel();
@@ -1418,6 +1539,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final TextView time = findViewById(R.id.timeTextView);
         final GenerateId generateId = new GenerateId();
         setProfileImageDrawer();
+        setProfileImageToolbar();
         final TextView classTextView = (TextView) findViewById(R.id.classNameText);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         DatabaseReference mdbr = databaseReference.child("notice");
@@ -1679,6 +1801,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Set up about section and drawerLayout.
      * */
     public void setAbout(MenuItem menuItem){
+        toolbarImageClicked = false;
         setContentView(R.layout.mainforabout);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -1690,6 +1813,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.syncState();
         setNameAndEmail();
         setProfileImageDrawer();
+        setProfileImageToolbar();
         initialPress=false;
         nextPressed=false;
         prevPressed=false;
@@ -1834,27 +1958,72 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      *
      * */
-    public void viewProfile(MenuItem menuItem){
-        setContentView(R.layout.mainforprofile);
-        ProgressBar progressBar = findViewById(R.id.uploadProgressBar);
-        progressBar.setVisibility(View.GONE);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        drawerLayout = findViewById(R.id.drawer);
-        navigationView = findViewById(R.id.navigation_view);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close);
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-        actionBarDrawerToggle.syncState();
-        setNameAndEmail();
-        setUserInfo();
-        setNameAndEmailProfile();
-        setImage();
-        setProfileImageDrawer();
-        initialPress=false;
-        nextPressed=false;
-        prevPressed=false;
+    public void viewProfile(View view){
+        if(!toolbarImageClicked) {
+            setContentView(R.layout.mainforprofile);
+            ProgressBar progressBar = findViewById(R.id.uploadProgressBar);
+            progressBar.setVisibility(View.GONE);
+            toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            drawerLayout = findViewById(R.id.drawer);
+            navigationView = findViewById(R.id.navigation_view);
+            actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
+            drawerLayout.addDrawerListener(actionBarDrawerToggle);
+            actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+            actionBarDrawerToggle.syncState();
+            setNameAndEmail();
+            setUserInfo();
+            setNameAndEmailProfile();
+            setImage();
+            setProfileImageDrawer();
+            setProfileImageToolbar();
+            initialPress = false;
+            nextPressed = false;
+            prevPressed = false;
+            toolbarImageClicked = true;
+        }
+        else {
+            launch();
+            toolbarImageClicked=false;
+        }
     }
+
+    private Bitmap handleImageOrientation() {
+        try {
+                InputStream inputStream = getContentResolver().openInputStream(mImageUri);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
+            ExifInterface ei = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                ei = new ExifInterface(inputStream);
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+
+                switch (orientation) {
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        return rotateImage(bitmap, 90);
+
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        return rotateImage(bitmap, 180);
+
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        return rotateImage(bitmap, 270);
+
+                    case ExifInterface.ORIENTATION_NORMAL:
+                    default:
+                        return bitmap;
+                }
+                }
+        }catch (IOException e1){
+           Toast.makeText(MainActivity.this, e1.getMessage(),Toast.LENGTH_LONG).show();
+        }
+        return bitmap;
+    }
+
+    public static Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
     public void setSpinner(){
         final Spinner spinner1 = findViewById(R.id.deptSpinner);
         final Spinner spinner2 = findViewById(R.id.sectionSpinner);

@@ -61,11 +61,7 @@
                 android:title="Edit preference"
                 android:onClick="toLogIN"
                 />
-            <item
-                android:icon="@drawable/ic_account_box_black_24dp"
-                android:title="My Profile"
-                android:onClick="viewProfile"
-                />
+
             <item
 
                 android:title="Log Out"
