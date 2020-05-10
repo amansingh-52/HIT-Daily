@@ -9,7 +9,6 @@
                 android:id="@+id/now"
                 android:icon="@drawable/ic_today_black_24dp"
                 android:title="Now"
-                android:onClick="mainScreen"
                 />
             <item
                 android:id="@+id/today"
@@ -22,12 +21,14 @@
     </item>
     <item
         android:id="@+id/attendanceManager"
-        android:title="Attendance Manager">
+        android:title="Attendance Manager"
+        >
         <menu>
             <item
                 android:id="@+id/attendanceManager1"
                 android:icon="@drawable/ic_storage_black_24dp"
                 android:title="Attendance Manager (Coming soon...)"
+                android:onClick="setAttendanceManager"
                 />
         </menu>
     </item>

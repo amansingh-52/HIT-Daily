@@ -1,59 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/sky">
+    android:background="#162447">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/today_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageView4"
             android:layout_width="69dp"
             android:layout_height="69dp"
-            android:layout_marginTop="96dp"
+            android:layout_marginTop="50dp"
             android:src="@mipmap/icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
-        <TextView
+        <androidx.cardview.widget.CardView
             android:id="@+id/textView11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="250dp"
+            android:layout_height="55dp"
             android:layout_marginTop="30dp"
-            android:text="About HIT Daily"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            app:cardCornerRadius="35dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="About HIT Daily"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/today_layout"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/today_layout">
 
         <TextView
             android:id="@+id/AboutData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
+            android:alpha=".7"
             android:gravity="center"
-            android:textAlignment="center"
             android:padding="10dp"
+            android:paddingLeft="10dp"
             android:paddingTop="10dp"
             android:paddingRight="10dp"
-            android:paddingLeft="10dp"
             android:paddingBottom="50dp"
-            android:textColor="@color/black"
-            android:alpha=".7"
             android:text="Hello, this is HIT Daily\nThis is an Android application which provide you one stop solution for your daily information requirements for a student of Heritage Institute of Technology, Kolkata. In this android application you can manage your attendance adn can also view their respective class routine, it also provides quick shortcuts for college website, notice section and examination site.\n\n\nIt uses email-password authentication, by which it creates an user's specific entry to the database to save user's preference and info so that if the user login again all his/her data remain safe and allots storage to save his/her profile image.\n\n\nLanguage used:\n\n\nThis android application is created using Java for its's backend and all the layouts is in XML file format.\n\n\nDependencies used: \n\n\nIt uses Firebase email-password authentication for authenticating user.\n\nIt uses Firebase database to store i) User name ii) User email Id iii) Year iv) Department v) Section vi) Group vii) and a unique profile image download url.\n\nCircular image view\n\nPicasso\n\n\n\n"
+            android:textAlignment="center"
+            android:textColor="@color/skyColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView4" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+    </ScrollView>
+</RelativeLayout>

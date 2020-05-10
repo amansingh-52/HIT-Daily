@@ -8,12 +8,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +26,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +38,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
@@ -51,6 +55,8 @@ import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
@@ -63,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FirebaseUser firebaseUser;
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
+    RadioButton radioButton;
     Toolbar toolbar;
     NavigationView navigationView;
     SetTime setTime = new SetTime();
@@ -88,8 +95,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     boolean initialPress = false;
     boolean toolbarImageClicked = false;
     boolean nextClassCounter = true;
+    boolean one = false;
     public static final int PICK_IMAGE_REQUEST=1;
     public static final int PICK_IMAGE_REQUEST_INITIAL=2;
+    RadioGroup radioGroup;
     Uri mImageUri;
     StorageReference storageReference;
     DatabaseReference myDataBase;
@@ -112,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
            launch();
         }
     }
+
 
     /**
      * Set view to take profile image.
@@ -220,12 +230,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private  void logout(){
-        toolbarImageClicked = false;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Do you want to logout?");
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                toolbarImageClicked = false;
                 logOut();
                 dialog.cancel();
             }
@@ -850,6 +860,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 try {
                                     classes.subject = dataSnapshot.child("subject").getValue().toString();
+                                    TextView noClassText = findViewById(R.id.todayCenter);
+                                    noClassText.setText("");
                                 } catch (NullPointerException e) {
                                     try {
                                         if (clac == 0) {
@@ -1057,7 +1069,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * */
     public void todaySetUp(MenuItem menuItem){
         toolbarImageClicked = false;
-        setDayView();
         today();
     }
 
@@ -1065,7 +1076,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Takes user to next day routine when next is pressed.
      * */
     public void next(View view){
-        setDayView();
         GenerateId gid = new GenerateId();
         if(prevPressed){
             counter+=2;
@@ -1093,7 +1103,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Takes user to previous day routine when prev is pressed.
      * */
     public void prev(View view){
-        setDayView();
         GenerateId gid = new GenerateId();
         if(nextPressed){
             counter-=2;
@@ -1112,6 +1121,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else counter--;
             prevPressed=true;
             initialPress=true;
+        }
+        public void radioButton(View view){
+            int checkRadioButton = radioGroup.getCheckedRadioButtonId();
+            radioButton = findViewById(checkRadioButton);
+        }
+
+        public void addClass(View view){
+            int checkRadioButton = radioGroup.getCheckedRadioButtonId();
+            radioButton = findViewById(checkRadioButton);
+            Toast.makeText(MainActivity.this,radioButton.getText().toString().trim(),Toast.LENGTH_SHORT).show();
+        }
+
+        public void setAttendanceManager(MenuItem menuItem){
+            toolbarImageClicked = false;
+            setContentView(R.layout.mainforaddclass);
+            toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            drawerLayout = findViewById(R.id.drawer);
+            navigationView = findViewById(R.id.navigation_view);
+            actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close);
+            drawerLayout.addDrawerListener(actionBarDrawerToggle);
+            actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+            actionBarDrawerToggle.syncState();
+            radioGroup = findViewById(R.id.radioGroup);
+            setNameAndEmail();
+            setProfileImageDrawer();
+            setProfileImageToolbar();
+            initialPress=false;
+            nextPressed=false;
+            prevPressed=false;
         }
 
         /**
@@ -1495,11 +1534,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         actionBarDrawerToggle.syncState();
-        setUpHomeScreen();
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomeFragment()).commit();
+        setNameAndEmail();
+        setProfileImageDrawer();
+        setProfileImageToolbar();
         initialPress=false;
         nextPressed=false;
         prevPressed=false;
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener  = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId())
+            {
+                case R.id.today_Bottom :
+                      getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomeFragment()).commit();
+                      break;
+                case R.id.routine_Bottom :
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new RoutineFragment()).commit();
+                        break;
+
+                case R.id.attendanceManager_Bottom :
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new AttendanceManagerFragment()).commit();
+                    break;
+            }
+            return true;
+        }
+    };
 
     /**
      * Launches preference to change it from menu item
@@ -1534,354 +1598,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        uploadData(currentUser);
     }
 
-    /**
-     * Set up home screen.
-     * */
-    public void setUpHomeScreen() {
-        final ProgressBar progressBar1 = findViewById(R.id.nowClassProgressBar);
-        final ProgressBar nextProgressBar = findViewById(R.id.nextClassProgressBar);
-        progressBar1.setVisibility(View.VISIBLE);
-        final TextView textView1 = findViewById(R.id.classNameText);
-        final TextView timeLeftTextView = (TextView) findViewById(R.id.nowClassStartTime);
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
-        final TextView time = findViewById(R.id.timeTextView);
-        final GenerateId generateId = new GenerateId();
-        setProfileImageDrawer();
-        setProfileImageToolbar();
-        final TextView classTextView = (TextView) findViewById(R.id.classNameText);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference mdbr = databaseReference.child("notice");
-        mdbr.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                TextView notice = findViewById(R.id.notice);
-                try {
-                    notice.setText(dataSnapshot.getValue().toString());
-                }catch (NullPointerException e1){
-                    e1.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        final DatabaseReference mdatabaseReference = databaseReference.child("User").child(firebaseUser.getUid());
-        mdatabaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
-                    dept = dataSnapshot.child("pref").child("dept").getValue().toString();
-                }catch (NullPointerException e){
-                    Toast.makeText(MainActivity.this,"Dept error",Toast.LENGTH_LONG).show();
-                }
-                try {
-                    section = dataSnapshot.child("pref").child("section").getValue().toString();
-                }catch (NullPointerException e){
-                    Toast.makeText(MainActivity.this,"Section error",Toast.LENGTH_LONG).show();
-                }
-                try{
-                    yearString = dataSnapshot.child("pref").child("year").getValue().toString();
-                }catch (NullPointerException e){
-                    Toast.makeText(MainActivity.this,"Year error",Toast.LENGTH_LONG).show();
-                }
-                try {
-                    groupString = dataSnapshot.child("pref").child("group").getValue().toString();
-                }catch (NullPointerException e){
-                    Toast.makeText(MainActivity.this,"Group error",Toast.LENGTH_LONG).show();
-                }
-                progressBar1.setVisibility(View.GONE);
-                nextProgressBar.setVisibility(View.GONE);
-
-                TextView classID = (TextView) findViewById(R.id.nowclassId);
-                GenerateClassId generateClassId = new GenerateClassId(dept, section, yearString, groupString);
-                classTextView.setText(dept + " -" + section + " \"" + groupString + "\" (" + yearString + ")");
-                long deptId = generateClassId.dept(dept);
-                long sectionId = generateClassId.section(section);
-                long yearId = generateClassId.year(yearString);
-                long groupId = generateClassId.group(groupString);
-                final long timeId = generateId.generate();
-                final String id = Long.toString(yearId) + Long.toString(deptId) + Long.toString(sectionId) + Long.toString(groupId) + Long.toString(timeId);
-                try {
-                    classID.setText("@classID\n" + id);
-                }catch (NullPointerException e){
-                    e.printStackTrace();
-                }
-                final TimeLeftCalculation timeLeftCalculation = new TimeLeftCalculation();
-                final TextView currentSubject = (TextView) findViewById(R.id.nowSubject);
-                final TextView currentTeacher = (TextView) findViewById(R.id.nowTeacher);
-                final TextView currentRoom = (TextView) findViewById(R.id.nowRoom_no);
-                final TextView currentCategory = (TextView) findViewById(R.id.nowCategory);
-                final TextView nowTextView = (TextView) findViewById(R.id.nowText);
-                final TextView nextText = findViewById(R.id.nextText);
-                final TextView nextTime = findViewById(R.id.nextClassStartTime);
-                final TextView nextRoom = findViewById(R.id.nextRoom_no);
-                final TextView nextCategory = findViewById(R.id.nextCategory);
-                final TextView nextClass = findViewById(R.id.nextSubject);
-                final TextView nextTeacher = findViewById(R.id.nextTeacher);
-                timeLeftTextView.setText(timeLeftCalculation.timeLeft());
-                try {
-                    DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
-                    dbref = dbref.child("classes").child(id);
-                    dbref.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            try {
-                                subject = Objects.requireNonNull(dataSnapshot.child("subject").getValue()).toString();
-                                currentSubject.setText(subject);
-                            } catch (NullPointerException e) {
-                                if(generateId.dayID() == 10){
-                                    try {
-                                        currentSubject.setText("");
-                                        ConstraintLayout now = findViewById(R.id.nowlayout);
-                                        now.setBackgroundResource(R.drawable.sunday);
-                                        nowTextView.setText("");
-                                        nextText.setText("");
-                                        nextTime.setText("");
-                                        nextRoom.setText("");
-                                        nextCategory.setText("");
-                                        nextClass.setText("");
-                                        nextTeacher.setText("NO UPCOMING CLASSES");
-                                    }catch (NullPointerException e1){
-                                        e1.printStackTrace();
-                                    }
-                                }
-                                else if(generateId.dayID() == 16){
-                                    try {
-                                        currentSubject.setText("");
-                                        ConstraintLayout now = findViewById(R.id.nowlayout);
-                                        now.setBackgroundResource(R.drawable.saturday);
-                                    }catch (NullPointerException e1){
-                                        e1.printStackTrace();
-                                    }
-                                    try {
-                                        nowTextView.setText("");
-                                        nextText.setText("");
-                                        nextTime.setText("");
-                                        nextRoom.setText("");
-                                        nextCategory.setText("");
-                                        nextClass.setText("");
-                                        nextTeacher.setText("NO UPCOMING CLASSES");
-                                    }catch (NullPointerException e1){
-                                        e1.printStackTrace();
-                                    }
-                                }
-                                else
-                                {
-                                    if(generateId.time()==21){
-                                        try {
-                                            nextTeacher.setText("CLASSES NOT STARTED YET");
-                                        }catch (NullPointerException nu){
-                                            nu.printStackTrace();
-                                        }
-                                    }
-                                    else if(generateId.time()==20){
-                                        try {
-                                            nextTeacher.setText("NO MORE CLASSES TODAY");
-                                        }catch (NullPointerException e1){
-                                            e1.printStackTrace();
-                                        }
-                                    }
-                                    else
-                                        try {
-                                            currentSubject.setText("Not Found :(");
-                                        }catch (NullPointerException e1){
-                                            e1.printStackTrace();
-                                        }
-                                }
-                            }
-                            try {
-                                teacher = Objects.requireNonNull(dataSnapshot.child("teacher").getValue()).toString();
-                                currentTeacher.setText(teacher);
-                            } catch (NullPointerException e) {
-                                if(generateId.dayID() == 10){
-                                    try{
-                                        currentTeacher.setText("");
-                                    }catch (NullPointerException e1){
-                                        e1.printStackTrace();
-                                    }
-                                }
-                                else if(generateId.dayID() == 16){
-                                    try {
-                                        currentTeacher.setText("");
-                                    }catch (NullPointerException e1){
-                                        e1.printStackTrace();
-                                    }
-                                }
-                                else
-                                {
-                                    if(generateId.time()==21){
-                                        try {
-                                            currentTeacher.setText("NO UPCOMING CLASSES");
-                                        }catch (NullPointerException e1){
-                                            e1.printStackTrace();
-                                        }
-                                    }
-                                    else if(generateId.time()==20){
-                                        try {
-                                            currentTeacher.setText("NO UPCOMING CLASSES");
-                                        }catch (NullPointerException e1){
-                                            e1.printStackTrace();
-                                        }
-                                    }
-                                    else
-                                        try {
-                                            currentTeacher.setText("");
-                                        }catch (NullPointerException e1){
-                                            e1.printStackTrace();
-                                        }
-                                }
-                            }
-                            try {
-                                room_no = Objects.requireNonNull(dataSnapshot.child("room_no").getValue()).toString();
-                                currentRoom.setText(room_no);
-                            } catch (NullPointerException e) {
-                                try {
-                                    currentRoom.setText("");
-                                }catch (NullPointerException e1){
-                                    e1.printStackTrace();
-                                }
-                            }
-                            try {
-                                category = Objects.requireNonNull(dataSnapshot.child("category").getValue()).toString();
-                                currentCategory.setText(category);
-                            } catch (NullPointerException e) {
-                                try {
-                                    currentCategory.setText("");
-                                }catch (NullPointerException e1){
-                                    e1.printStackTrace();
-                                }
-                            }
-                            setNameAndEmail();
-                            int i=1;
-                            GenerateId generateId1 = new GenerateId();
-                            do{
-                                try {
-                                    final int nextTimeId = (int) timeId+i++;
-                                    final String nextId = Long.toString(yearId) + Long.toString(deptId) + Long.toString(sectionId) + Long.toString(groupId) + Integer.toString(nextTimeId);
-                                    TextView nextClassId = findViewById(R.id.nextclassId);
-                                    nextClassId.setText(nextId);
-                                    DatabaseReference dbref = FirebaseDatabase.getInstance().getReference();
-                                    dbref = dbref.child("classes").child(nextId);
-                                    dbref.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            try {
-                                                nextSubjectString = Objects.requireNonNull(dataSnapshot.child("subject").getValue()).toString();
-                                                if(!nextSubjectString.equals(subject)) {
-                                                    try {
-                                                        nextClass.setText(nextSubjectString);
-                                                    }catch (NullPointerException e1){
-                                                        e1.printStackTrace();
-                                                    }
-                                                    nextClassCounter=false;
-                                                    classCounter=0;
-                                                }
-                                                else {
-                                                    try {
-                                                        nextClass.setText("");
-                                                        String display = "No more classes";
-                                                        nextTeacher.setText(display.toUpperCase());
-                                                        nextRoom.setText("");
-                                                        nextCategory.setText("");
-                                                    }catch (NullPointerException e1){
-                                                        e1.printStackTrace();
-                                                    }
-                                                    nextClassCounter=true;
-                                                    return;
-                                                }
-                                            } catch (NullPointerException e) {
-                                                e.printStackTrace();
-                                            }
-
-                                            try {
-                                                nextTeacherString = Objects.requireNonNull(dataSnapshot.child("teacher").getValue()).toString();
-                                                nextTeacher.setText(nextTeacherString);
-                                            } catch (NullPointerException e) {
-                                                e.printStackTrace();
-                                            }
-                                            try {
-                                                nextRoom_noString = Objects.requireNonNull(dataSnapshot.child("room_no").getValue()).toString();
-                                                nextRoom.setText(nextRoom_noString);
-                                            } catch (NullPointerException e) {
-                                                try {
-                                                    nextRoom.setText("");
-                                                }catch (NullPointerException e1){
-                                                    e1.printStackTrace();
-                                                }
-                                            }
-                                            try {
-                                                nextCategoryString = Objects.requireNonNull(dataSnapshot.child("category").getValue()).toString();
-                                                nextCategory.setText(nextCategoryString);
-                                            } catch (NullPointerException e) {
-                                                try {
-                                                    nextCategory.setText("");
-                                                }catch (NullPointerException e1){
-                                                    e1.printStackTrace();
-                                                }
-                                            }
-                                        }
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                } catch (NullPointerException e) {
-                                    e.printStackTrace();
-                                }
-                            }while(nextClassCounter&&(generateId1.time()+i<20));
-
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            try {
-                                textView1.setText("Error");
-                            }catch (NullPointerException e1){
-                                e1.printStackTrace();
-                            }
-                        }
-                    });
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    time.setText(setTime.generateDAndT());
-                }catch (NullPointerException e1){
-                    e1.printStackTrace();
-                }
-                Thread thread = new Thread() {
-                    @Override
-                    public void run() {
-                        while (!isInterrupted()) {
-                            try {
-                                Thread.sleep(50);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            timeLeftTextView.setText(timeLeftCalculation.timeLeft());
-                                            time.setText(setTime.getWeek() + " " + setTime.generateDAndT());
-                                        }catch (NullPointerException e1){
-                                            e1.printStackTrace();
-                                        }
-                                    }
-                                });
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                };
-                thread.start();
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     /**
      * Set up about section and drawerLayout.
@@ -2097,7 +1813,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         currentUser = users;
 
     }
-    class SetTime{
+   public class SetTime{
         String currentTime(){
             long time = System.currentTimeMillis();
             DateFormat formatter = new SimpleDateFormat("hh:mm:ss aa");

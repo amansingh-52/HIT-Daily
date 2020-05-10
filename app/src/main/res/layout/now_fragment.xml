@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/now_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/timeAndClass"
+            layout="@layout/content_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp" />
+
+        <include
+            android:id="@+id/nowlayout"
+            layout="@layout/nowview"
+            android:layout_width="match_parent"
+            android:layout_height="235dp"
+            android:layout_below="@id/timeAndClass"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="30dp" />
+
+        <include
+            android:id="@+id/nextlayout"
+            layout="@layout/nextview"
+            android:layout_width="match_parent"
+            android:layout_height="235dp"
+            android:layout_below="@id/nowlayout"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="30dp" />
+    </RelativeLayout>
+
+</ScrollView>

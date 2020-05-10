@@ -16,14 +16,15 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/toolbarImage"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
                 android:layout_marginEnd="10dp"
                 android:onClick="viewProfile"
+                android:padding="5dp"
                 android:src="@drawable/duck"
                 app:civ_border_color="@color/skyColor"
                 app:civ_border_width="2dp"
