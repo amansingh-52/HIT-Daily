@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="150dp"
-    android:background="#9bbcf9"
+    android:background="@color/darkBackground"
     android:orientation="vertical">
 
     <TextView
@@ -14,7 +14,6 @@
         android:layout_marginTop="50dp"
         android:layout_marginEnd="10dp"
         android:text="User Name"
-        android:textColor="#000000"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,7 +26,6 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:text="E-mail id"
-        android:textColor="#000000"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userNameTextView" />
@@ -39,7 +37,6 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="24dp"
         android:src="@drawable/duck"
-        app:civ_border_color="@color/skyColor"
         app:civ_border_width="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.093"

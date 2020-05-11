@@ -16,8 +16,23 @@
     <style name="AppTheme3" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/black</item>
-        <item name="colorPrimaryDark">@color/skyColor</item>
+        <item name="colorPrimaryDark">@color/darkBackground</item>
         <item name="colorAccent">@color/black</item>
+        <item name="android:textColorPrimary">@color/darkBlueText</item>
+        <item name="android:textColor">@color/darkBlueText</item>
+        <item name="android:textColorSecondary">@color/darkBlueText</item>
+
     </style>
+
+    <style name="AppTheme4" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryDark">@color/darkBackground</item>
+        <item name="colorAccent">@color/black</item>
+        <item name="android:textColorPrimary">@color/darkText</item>
+        <item name="android:textColor">@color/darkText</item>
+        <item name="android:textColorSecondary">@color/darkText</item>
+    </style>
+
 
 </resources>

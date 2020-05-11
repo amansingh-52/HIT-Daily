@@ -11,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#9bbcf9"
+        android:background="@color/darkBackground"
         android:theme="@style/ThemeOverlay.AppCompat">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +26,6 @@
                 android:onClick="viewProfile"
                 android:padding="5dp"
                 android:src="@drawable/duck"
-                app:civ_border_color="@color/skyColor"
                 app:civ_border_width="2dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +36,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/application_name"
-                android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"

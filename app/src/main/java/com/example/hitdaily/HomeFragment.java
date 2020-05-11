@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
@@ -52,12 +53,10 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-            ProgressDialog progressDialog = new ProgressDialog(getContext());
-            progressDialog.setMessage("Loading");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-                final ProgressBar progressBar1 = getView() .  findViewById(R.id.nowClassProgressBar);
-                final ProgressBar nextProgressBar = getView() .  findViewById(R.id.nextClassProgressBar);
+           ProgressDialog progressDialog = new ProgressDialog(getContext());
+           progressDialog.setMessage("Loading...");
+           progressDialog.setCancelable(false);
+           progressDialog.show();
                 final TextView timeLeftTextView = (TextView) getView().findViewById(R.id.nowClassStartTime);
                 firebaseAuth = FirebaseAuth.getInstance();
                 firebaseUser = firebaseAuth.getCurrentUser();
@@ -69,7 +68,6 @@ public class HomeFragment extends Fragment {
                 mdbr.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        progressDialog.cancel();
                         TextView notice = getView().  findViewById(R.id.notice);
                         try {
                             notice.setText(dataSnapshot.getValue().toString());
@@ -108,9 +106,6 @@ public class HomeFragment extends Fragment {
                         } catch (NullPointerException e) {
                             e.printStackTrace();
                         }
-                        progressBar1.setVisibility(View.GONE);
-                        nextProgressBar.setVisibility(View.GONE);
-
                         TextView classID = (TextView) getView() . findViewById(R.id.nowclassId);
                        GenerateClassId generateClassId = new GenerateClassId(dept, section, yearString, groupString);
                         classTextView.setText(dept + " -" + section + " \"" + groupString + "\" (" + yearString + ")");
@@ -144,7 +139,6 @@ public class HomeFragment extends Fragment {
                             dbref.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    progressDialog.cancel();
                                     try {
                                         subject = Objects.requireNonNull(dataSnapshot.child("subject").getValue()).toString();
                                         currentSubject.setText(subject);
@@ -152,7 +146,7 @@ public class HomeFragment extends Fragment {
                                         if (generateId.dayID() == 10) {
                                             try {
                                                 currentSubject.setText("");
-                                                ConstraintLayout now = getView() .  findViewById(R.id.nowlayout);
+                                                ConstraintLayout now = getView() .  findViewById(R.id.nowConstraint);
                                                 now.setBackgroundResource(R.drawable.sunday);
                                                 nowTextView.setText("");
                                                 nextText.setText("");

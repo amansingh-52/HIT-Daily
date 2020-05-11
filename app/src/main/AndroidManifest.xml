@@ -9,7 +9,6 @@
         android:roundIcon="@mipmap/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme3">
-
         <activity
             android:name="com.example.hitdaily.MainActivity"
             android:screenOrientation="portrait"

@@ -6,4 +6,8 @@
     <color name="skyColor">#9bbcf9</color>
     <color name="black">#000000</color>
     <color name="dark">#162447</color>
+    <color name="darkBackground">#96e0d8</color>
+    <color name="darkForeground">#fdfadb</color>
+    <color name="darkText">#000000</color>
+    <color name="darkBlueText">#000000</color>
 </resources>

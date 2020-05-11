@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,6 +36,10 @@ public class RoutineFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Loading");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
             TextView subject1 = getView().findViewById(R.id.sub_view);
             TextView subject2 = getView().findViewById(R.id.sub2_view);
             TextView subject3 = getView().findViewById(R.id.sub3_view);
@@ -175,6 +178,7 @@ public class RoutineFragment extends Fragment {
             mdatabaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    progressDialog.cancel();
                     try {
                         dept = dataSnapshot.child("pref").child("dept").getValue().toString();
                     } catch (NullPointerException e) {

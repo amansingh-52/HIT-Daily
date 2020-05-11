@@ -48,9 +48,13 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -108,18 +112,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+        Animation animation = AnimationUtils.loadAnimation(this,R.anim.botttom_animation);
+        setContentView(R.layout.startuppage);
+        CircleImageView circleImageView = findViewById(R.id.startup_image);
+        circleImageView.setAnimation(animation);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(firebaseUser == null) {
+                    launchLogIN();
+                }
+                else {
+                    launch();
+                }
+            }
+        },1600);
+
 
 
         /**
          * Checks for user already logged in or not
          * If null launches LogInPage or else Launches main activity
          **/
-        if(firebaseUser == null) {
-            launchLogIN();
-        }
-        else {
-           launch();
-        }
+
     }
 
 

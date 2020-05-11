@@ -1,38 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/main"
-        android:title="Menu"
-        >
-        <menu>
-            <item
-                android:id="@+id/now"
-                android:icon="@drawable/ic_today_black_24dp"
-                android:title="Now"
-                />
-            <item
-                android:id="@+id/today"
-                android:icon="@drawable/ic_today_black_24dp"
-                android:title="Routine"
-                android:onClick="todaySetUp"
-            />
-
-        </menu>
-    </item>
-    <item
-        android:id="@+id/attendanceManager"
-        android:title="Attendance Manager"
-        >
-        <menu>
-            <item
-                android:id="@+id/attendanceManager1"
-                android:icon="@drawable/ic_storage_black_24dp"
-                android:title="Attendance Manager (Coming soon...)"
-                android:onClick="setAttendanceManager"
-                />
-        </menu>
-    </item>
-    <item
         android:id="@+id/college"
         android:title="College">
         <menu>

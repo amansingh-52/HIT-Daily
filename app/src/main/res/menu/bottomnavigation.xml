@@ -3,15 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/today_Bottom"
-        android:icon="@drawable/ic_today_black_24dp"
-        android:title="Today"
+        android:icon="@drawable/ic_home"
+        android:title="Now"
         />
     <item
         android:id="@+id/routine_Bottom"
-        android:icon = "@drawable/ic_assessment_black_24dp"
-        android:title="Attendance Manager" />
+        android:icon = "@drawable/ic_today_black_24dp"
+        android:title="Routine" />
     <item
         android:id="@+id/attendanceManager_Bottom"
+        android:icon="@drawable/ic_assessment_black_24dp"
+        android:title="Attendance Manager"/>
+
+    <item
+        android:id="@+id/profile_Bottom"
         android:icon="@drawable/ic_account_circle_black_24dp"
         android:title="Profile"/>
 </menu>
