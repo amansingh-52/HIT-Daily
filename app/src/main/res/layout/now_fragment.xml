@@ -4,7 +4,7 @@
     android:id="@+id/now_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/darkForeground">
+    android:background="@drawable/gradient">
 
     <RelativeLayout
         android:layout_width="match_parent"

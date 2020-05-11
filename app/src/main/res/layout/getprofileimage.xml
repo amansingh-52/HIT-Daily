@@ -5,7 +5,7 @@
     android:id="@+id/getProfileImage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/sky"
+    android:background="@drawable/gradient"
     android:orientation="vertical">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -25,9 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="80dp"
+        android:alpha=".7"
         android:onClick="setPreferenceLayout"
         android:text="Skip for now >>"
-        android:alpha=".7"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -36,11 +36,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
-        android:text="Choose your profile image"
-        android:textStyle="bold"
-        android:textSize="20sp"
         android:gravity="center"
+        android:text="Choose your profile image"
         android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/circleImageView" />

@@ -10,13 +10,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
 
         <TextView
             android:id="@+id/nextSubject"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:textAlignment="center"
             android:textSize="20sp"
@@ -29,6 +31,7 @@
             android:id="@+id/nextTeacher"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:textAlignment="center"
             android:textSize="16sp"
@@ -43,6 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
             android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:textAlignment="center"
             android:textSize="14sp"
@@ -56,6 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="40dp"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:textAlignment="center"
             android:textSize="14sp"
@@ -68,6 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:text="NEXT"
             android:textAlignment="center"
@@ -82,6 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintStart_toEndOf="parent"
@@ -94,6 +101,7 @@
             android:layout_marginTop="25dp"
             android:layout_marginEnd="30dp"
             android:alpha=".5"
+            android:background="@android:color/transparent"
             android:text="\@classId"
             android:textSize="10sp"
             android:textStyle="italic"
@@ -107,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
             android:alpha="2"
-            android:text="."
+            android:background="@android:color/transparent"
             android:textAlignment="center"
             android:textColor="#FF0000"
             android:textStyle="bold"

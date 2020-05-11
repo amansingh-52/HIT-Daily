@@ -37,6 +37,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="24dp"
         android:src="@drawable/duck"
+        app:civ_border_color="@color/darkBackground"
         app:civ_border_width="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.093"

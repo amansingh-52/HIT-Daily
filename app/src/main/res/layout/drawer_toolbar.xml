@@ -25,6 +25,7 @@
                 android:layout_marginEnd="10dp"
                 android:onClick="viewProfile"
                 android:padding="5dp"
+                app:civ_border_color="@color/darkBackground"
                 android:src="@drawable/duck"
                 app:civ_border_width="2dp"
                 app:layout_constraintBottom_toBottomOf="parent"

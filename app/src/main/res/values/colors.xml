@@ -10,4 +10,5 @@
     <color name="darkForeground">#fdfadb</color>
     <color name="darkText">#000000</color>
     <color name="darkBlueText">#000000</color>
+    <color name="endColor">#fbcfc0</color>
 </resources>

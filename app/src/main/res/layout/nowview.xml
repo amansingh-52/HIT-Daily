@@ -11,13 +11,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/nowConstraint"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
 
         <TextView
             android:id="@+id/nowSubject"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:textAlignment="center"
             android:textSize="20sp"
@@ -30,6 +32,7 @@
             android:id="@+id/nowTeacher"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:textAlignment="center"
             android:textSize="16sp"
@@ -44,6 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
             android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:textAlignment="center"
             android:textSize="14sp"
@@ -57,6 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="40dp"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:textAlignment="center"
             android:textSize="14sp"
@@ -69,6 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:text="Now"
             android:textAlignment="center"
@@ -84,6 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintStart_toEndOf="parent"
@@ -96,12 +103,12 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="25dp"
             android:alpha=".5"
+            android:background="@android:color/transparent"
             android:text="\@classId"
             android:textSize="10sp"
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

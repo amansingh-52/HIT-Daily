@@ -27,7 +27,7 @@
             android:id="@+id/fragment_container"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/darkForeground"
+            android:background="@drawable/gradient"
             app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/include"
@@ -53,10 +53,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/darkForeground"
+        android:background="@color/endColor"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/drawer_header"
-        app:menu="@menu/menu" >
+        app:menu="@menu/menu">
 
     </com.google.android.material.navigation.NavigationView>
 

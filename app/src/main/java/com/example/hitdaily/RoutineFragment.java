@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.R;
@@ -70,18 +71,29 @@ public class RoutineFragment extends Fragment {
             TextView room8 = getView().findViewById(R.id.category8_textView);
             TextView room9 = getView().findViewById(R.id.category9_textView);
             TextView room10 = getView().findViewById(R.id.category10_textView);
-            TextView time1 = getView().findViewById(R.id.roomNO_textView);
-            TextView time2 = getView().findViewById(R.id.roomNO2_textView);
-            TextView time3 = getView().findViewById(R.id.roomNO3_textView);
-            TextView time4 = getView().findViewById(R.id.roomNO4_textView);
-            TextView time5 = getView().findViewById(R.id.roomNO5_textView);
-            TextView time6 = getView().findViewById(R.id.roomNO6_textView);
-            TextView time7 = getView().findViewById(R.id.roomNO7_textView);
-            TextView time8 = getView().findViewById(R.id.roomNO8_textView);
-            TextView time9 = getView().findViewById(R.id.roomNO9_textView);
-            TextView time10 = getView().findViewById(R.id.roomNO10_textView);
             TextView center = getView().findViewById(R.id.todayCenter);
-            try {
+            CardView c1 = getView().findViewById(R.id.v1);
+            CardView c2 = getView().findViewById(R.id.v2);
+            CardView c3 = getView().findViewById(R.id.v3);
+            CardView c4 = getView().findViewById(R.id.v4);
+            CardView c5 = getView().findViewById(R.id.v5);
+            CardView c6 = getView().findViewById(R.id.v6);
+            CardView c7 = getView().findViewById(R.id.v7);
+            CardView c8 = getView().findViewById(R.id.v8);
+            CardView c9 = getView().findViewById(R.id.v9);
+            CardView c10 = getView().findViewById(R.id.v10);
+            c1.setVisibility(View.VISIBLE);
+            c2.setVisibility(View.VISIBLE);
+            c3.setVisibility(View.VISIBLE);
+            c4.setVisibility(View.VISIBLE);
+            c5.setVisibility(View.VISIBLE);
+            c6.setVisibility(View.VISIBLE);
+            c7.setVisibility(View.VISIBLE);
+            c8.setVisibility(View.VISIBLE);
+            c9.setVisibility(View.VISIBLE);
+            c10.setVisibility(View.VISIBLE);
+
+        try {
                 room1.setText("");
                 room2.setText("");
                 room3.setText("");
@@ -121,25 +133,25 @@ public class RoutineFragment extends Fragment {
             {
                 try {
                     center.setText("NO CLASSES");
-                    time1.setText("");
+                    c1.setVisibility(View.GONE);
                     room1.setText("");
-                    time2.setText("");
+                    c2.setVisibility(View.GONE);
                     room2.setText("");
-                    time3.setText("");
+                    c3.setVisibility(View.GONE);
                     room3.setText("");
-                    time4.setText("");
+                    c4.setVisibility(View.GONE);
                     room4.setText("");
-                    time5.setText("");
+                    c5.setVisibility(View.GONE);
                     room5.setText("");
-                    time6.setText("");
+                    c6.setVisibility(View.GONE);
                     room6.setText("");
-                    time7.setText("");
+                    c7.setVisibility(View.GONE);
                     room7.setText("");
-                    time8.setText("");
+                    c8.setVisibility(View.GONE);
                     room8.setText("");
-                    time9.setText("");
+                    c9.setVisibility(View.GONE);
                     room9.setText("");
-                    time10.setText("");
+                    c10.setVisibility(View.GONE);
                     room10.setText("");
                 }catch (NullPointerException e1){
                     e1.printStackTrace();
@@ -222,43 +234,43 @@ public class RoutineFragment extends Fragment {
                                 } catch (NullPointerException e) {
                                     try {
                                         if (clac == 0) {
-                                            time1.setText("");
+                                            c1.setVisibility(View.GONE);
                                             room1.setText("");
                                         }
                                         if (clac == 1) {
-                                            time2.setText("");
+                                            c2.setVisibility(View.GONE);
                                             room2.setText("");
                                         }
                                         if (clac == 2) {
-                                            time3.setText("");
+                                            c3.setVisibility(View.GONE);
                                             room3.setText("");
                                         }
                                         if (clac == 3) {
-                                            time4.setText("");
+                                            c4.setVisibility(View.GONE);
                                             room4.setText("");
                                         }
                                         if (clac == 4) {
-                                            time5.setText("");
+                                            c5.setVisibility(View.GONE);
                                             room5.setText("");
                                         }
                                         if (clac == 5) {
-                                            time6.setText("");
+                                            c6.setVisibility(View.GONE);
                                             room6.setText("");
                                         }
                                         if (clac == 6) {
-                                            time7.setText("");
+                                            c7.setVisibility(View.GONE);
                                             room7.setText("");
                                         }
                                         if (clac == 7) {
-                                            time8.setText("");
+                                            c8.setVisibility(View.GONE);
                                             room8.setText("");
                                         }
                                         if (clac == 8) {
-                                            time9.setText("");
+                                            c9.setVisibility(View.GONE);
                                             room9.setText("");
                                         }
                                         if (clac == 9) {
-                                            time10.setText("");
+                                            c10.setVisibility(View.GONE);
                                             room10.setText("");
                                         }
                                         return;

@@ -6,20 +6,17 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 import com.example.myapplication.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,7 +35,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
@@ -52,7 +48,6 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.MimeTypeMap;
@@ -284,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void login(View view){
       final   EditText emailID = findViewById(R.id.emailSignIn);
        final EditText password1 = findViewById(R.id.passwordSignIn);
-        if(emailID.getText().toString().equals("")){
+        if(emailID.getText().toString().trim().equals("")){
             Toast.makeText(this,"email ID cannot be blank",Toast.LENGTH_LONG).show();
             return;
         }
@@ -293,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(this,"Please enter a valid e-mail id",Toast.LENGTH_LONG).show();
             return;
         }
-        if(password1.getText().toString().equals("")){
+        if(password1.getText().toString().trim().equals("")){
             Toast.makeText(this,"Password cannot be blank",Toast.LENGTH_LONG).show();
             return;
         }
@@ -693,16 +688,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             TextView subject8 = findViewById(R.id.sub8_view);
             TextView subject9 = findViewById(R.id.sub9_view);
             TextView subject10 = findViewById(R.id.sub10_view);
-            TextView time1 = findViewById(R.id.roomNO_textView);
-            TextView time2 = findViewById(R.id.roomNO2_textView);
-            TextView time3 = findViewById(R.id.roomNO3_textView);
-            TextView time4 = findViewById(R.id.roomNO4_textView);
-            TextView time5 = findViewById(R.id.roomNO5_textView);
-            TextView time6 = findViewById(R.id.roomNO6_textView);
-            TextView time7 = findViewById(R.id.roomNO7_textView);
-            TextView time8 = findViewById(R.id.roomNO8_textView);
-            TextView time9 = findViewById(R.id.roomNO9_textView);
-            TextView time10 = findViewById(R.id.roomNO10_textView);
             TextView teacher1 = findViewById(R.id.teacher_textView);
             TextView teacher2 = findViewById(R.id.teacher2_textView);
             TextView teacher3 = findViewById(R.id.teacher3_textView);
@@ -724,6 +709,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             TextView room9 = findViewById(R.id.category9_textView);
             TextView room10 = findViewById(R.id.category10_textView);
             TextView center = findViewById(R.id.todayCenter);
+            CardView c1 = findViewById(R.id.v1);
+            CardView c2 = findViewById(R.id.v2);
+            CardView c3 = findViewById(R.id.v3);
+            CardView c4 = findViewById(R.id.v4);
+            CardView c5 = findViewById(R.id.v5);
+            CardView c6 = findViewById(R.id.v6);
+            CardView c7 = findViewById(R.id.v7);
+            CardView c8 = findViewById(R.id.v8);
+            CardView c9 = findViewById(R.id.v9);
+            CardView c10 =findViewById(R.id.v10);
+            c1.setVisibility(View.VISIBLE);
+            c2.setVisibility(View.VISIBLE);
+            c3.setVisibility(View.VISIBLE);
+            c4.setVisibility(View.VISIBLE);
+            c5.setVisibility(View.VISIBLE);
+            c6.setVisibility(View.VISIBLE);
+            c7.setVisibility(View.VISIBLE);
+            c8.setVisibility(View.VISIBLE);
+            c9.setVisibility(View.VISIBLE);
+            c10.setVisibility(View.VISIBLE);
             try {
                 room1.setText("");
                 room2.setText("");
@@ -765,25 +770,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if(dayNo==10||dayNo==16) {
                 try {
                     center.setText("NO CLASSES");
-                    time1.setText("");
+                    c1.setVisibility(View.GONE);
                     room1.setText("");
-                    time2.setText("");
+                    c2.setVisibility(View.GONE);
                     room2.setText("");
-                    time3.setText("");
+                    c3.setVisibility(View.GONE);
                     room3.setText("");
-                    time4.setText("");
+                    c4.setVisibility(View.GONE);
                     room4.setText("");
-                    time5.setText("");
+                    c5.setVisibility(View.GONE);
                     room5.setText("");
-                    time6.setText("");
+                    c6.setVisibility(View.GONE);
                     room6.setText("");
-                    time7.setText("");
+                    c7.setVisibility(View.GONE);
                     room7.setText("");
-                    time8.setText("");
+                    c8.setVisibility(View.GONE);
                     room8.setText("");
-                    time9.setText("");
+                    c9.setVisibility(View.GONE);
                     room9.setText("");
-                    time10.setText("");
+                    c10.setVisibility(View.GONE);
                     room10.setText("");
                 }catch (NullPointerException e1){
                     e1.printStackTrace();
@@ -880,43 +885,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 } catch (NullPointerException e) {
                                     try {
                                         if (clac == 0) {
-                                            time1.setText("");
+                                            c1.setVisibility(View.GONE);
                                             room1.setText("");
                                         }
                                         if (clac == 1) {
-                                            time2.setText("");
+                                            c2.setVisibility(View.GONE);
                                             room2.setText("");
                                         }
                                         if (clac == 2) {
-                                            time3.setText("");
+                                            c3.setVisibility(View.GONE);
                                             room3.setText("");
                                         }
                                         if (clac == 3) {
-                                            time4.setText("");
+                                            c4.setVisibility(View.GONE);
                                             room4.setText("");
                                         }
                                         if (clac == 4) {
-                                            time5.setText("");
+                                            c5.setVisibility(View.GONE);
                                             room5.setText("");
                                         }
                                         if (clac == 5) {
-                                            time6.setText("");
+                                            c6.setVisibility(View.GONE);
                                             room6.setText("");
                                         }
                                         if (clac == 6) {
-                                            time7.setText("");
+                                            c7.setVisibility(View.GONE);
                                             room7.setText("");
                                         }
                                         if (clac == 7) {
-                                            time8.setText("");
+                                            c8.setVisibility(View.GONE);
                                             room8.setText("");
                                         }
                                         if (clac == 8) {
-                                            time9.setText("");
+                                            c9.setVisibility(View.GONE);
                                             room9.setText("");
                                         }
                                         if (clac == 9) {
-                                            time10.setText("");
+                                            c10.setVisibility(View.GONE);
                                             room10.setText("");
                                         }
                                         return;
@@ -1061,31 +1066,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://github.com/amansingh-52/HIT-Daily"));
             startActivity(intent);
         }
-    /**
-     * Setup routine view and drawerLayout.
-     * */
-    public void setDayView(){
-        setContentView(R.layout.mainfortoday);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        drawerLayout = findViewById(R.id.drawer);
-        navigationView = findViewById(R.id.navigation_view);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close);
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-        actionBarDrawerToggle.syncState();
-        setNameAndEmail();
-        setProfileImageDrawer();
-        setProfileImageToolbar();
-    }
 
-    /**
-     * Launches routine from today routine.
-     * */
-    public void todaySetUp(MenuItem menuItem){
-        toolbarImageClicked = false;
-        today();
-    }
 
     /**
      * Takes user to next day routine when next is pressed.
@@ -1540,6 +1521,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Set up home screen and drawerLayout.
      * */
     void launch() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
