@@ -71,21 +71,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     RadioButton radioButton;
     Toolbar toolbar;
     NavigationView navigationView;
-    SetTime setTime = new SetTime();
     String[] year ={"1st","2nd","3rd","4th"};
     String[] branch = {"CSE", "ECE","IT","CE","ME","ChE","EE","AEIE","BT"};
     String[] sec = {"N/A","A","B","C"};
     String[] group = {"A","B"};
     String dept="Hello",section="World",yearString = "year", groupString = "group";
-    String subject;
-    String teacher;
-    String room_no;
-    String category;
-    String nextSubjectString;
-    String nextTeacherString;
-    String nextRoom_noString;
-    String nextCategoryString;
-    int classCounter = 0;
     Users currentUser;
     ProgressBar progressBar;
     int counter=0;
@@ -93,8 +83,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     boolean prevPressed = false;
     boolean initialPress = false;
     boolean toolbarImageClicked = false;
-    boolean nextClassCounter = true;
-    boolean one = false;
     public static final int PICK_IMAGE_REQUEST=1;
     public static final int PICK_IMAGE_REQUEST_INITIAL=2;
     RadioGroup radioGroup;
@@ -102,15 +90,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     StorageReference storageReference;
     DatabaseReference myDataBase;
     Bitmap bitmap = null;
+    private static int TIME = 1600;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-        Animation animation = AnimationUtils.loadAnimation(this,R.anim.botttom_animation);
+        Animation bottomAnimation = AnimationUtils.loadAnimation(this,R.anim.botttom_animation);
+        Animation topAnimation = AnimationUtils.loadAnimation(this,R.anim.top_animation);
         setContentView(R.layout.startuppage);
         CircleImageView circleImageView = findViewById(R.id.startup_image);
-        circleImageView.setAnimation(animation);
+        TextView textView = findViewById(R.id.startup_text);
+        textView.setAnimation(topAnimation);
+        circleImageView.setAnimation(bottomAnimation);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -121,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     launch();
                 }
             }
-        },1600);
+        },TIME);
 
 
 
@@ -1180,7 +1172,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         databaseReference.child("User").child(firebaseUser.getUid()).child("pref").setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(MainActivity.this,"All set !",Toast.LENGTH_LONG).show();
+                if(task.isSuccessful())
+                 launch();
             }
         });
     }
@@ -1493,15 +1486,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * Launches home screen
-     * */
-    public void mainScreen (MenuItem menuItem){
-
-        toolbarImageClicked = false;
-        launch();
-    }
-
-    /**
      * Launches sign up page.
      * */
     public void signUp(View view){
@@ -1592,8 +1576,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Saves preferences and launch home screen.
      * */
     public void toHome(View view){
-       launch();
-       uploadData(currentUser);
+        uploadData(currentUser);
     }
 
 

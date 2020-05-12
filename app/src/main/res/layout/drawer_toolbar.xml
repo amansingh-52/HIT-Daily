@@ -11,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/darkBackground"
+        android:background="@drawable/gradient_blue"
         android:theme="@style/ThemeOverlay.AppCompat">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,8 +25,8 @@
                 android:layout_marginEnd="10dp"
                 android:onClick="viewProfile"
                 android:padding="5dp"
-                app:civ_border_color="@color/darkBackground"
                 android:src="@drawable/duck"
+                app:civ_border_color="@color/darkBackground"
                 app:civ_border_width="2dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

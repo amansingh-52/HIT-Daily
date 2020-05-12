@@ -13,21 +13,32 @@
         <include
             android:id="@+id/timeAndClass"
             layout="@layout/content_main"
-            android:layout_width="match_parent"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="30dp" />
+            android:layout_marginTop="80dp"
+            android:layout_marginRight="20dp" />
+
+        <include
+            android:id="@+id/weatherCard"
+            layout="@layout/weather"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="80dp"
+            android:layout_marginEnd="15dp"
+            android:layout_toEndOf="@+id/timeAndClass" />
 
         <include
             android:id="@+id/nowlayout"
             layout="@layout/nowview"
             android:layout_width="match_parent"
-            android:layout_height="235dp"
-            android:layout_below="@id/timeAndClass"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="30dp" />
+            android:layout_height="135dp"
+            android:layout_below="@id/weatherCard"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="15dp" />
 
         <include
             android:id="@+id/nextlayout"
@@ -35,9 +46,42 @@
             android:layout_width="match_parent"
             android:layout_height="235dp"
             android:layout_below="@id/nowlayout"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="30dp"
+            android:text="Information desk:"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/weatherCard"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="30dp"
+            android:text="Now:"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nowlayout"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="30dp"
-            android:layout_marginRight="30dp" />
+            android:layout_marginRight="30dp"
+            android:text="Discussion forum:"
+            android:textSize="20sp" />
     </RelativeLayout>
 
 </ScrollView>

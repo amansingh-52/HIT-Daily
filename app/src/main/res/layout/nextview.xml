@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="300dp"
     android:orientation="vertical"
-    app:cardCornerRadius="55dp">
+    app:cardCornerRadius="15dp"
+    app:cardElevation="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -75,7 +76,6 @@
             android:layout_marginTop="20dp"
             android:background="@android:color/transparent"
             android:gravity="center"
-            android:text="NEXT"
             android:textAlignment="center"
             android:textSize="16sp"
             android:textStyle="italic"
@@ -102,7 +102,6 @@
             android:layout_marginEnd="30dp"
             android:alpha=".5"
             android:background="@android:color/transparent"
-            android:text="\@classId"
             android:textSize="10sp"
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"

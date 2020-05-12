@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="300dp"
     android:orientation="vertical"
-    app:cardCornerRadius="55dp">
+    app:cardCornerRadius="15dp"
+    app:cardElevation="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/nowConstraint"
@@ -18,7 +19,7 @@
             android:id="@+id/nowSubject"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="48dp"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:textAlignment="center"
@@ -26,7 +27,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nowText" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/nowTeacher"
@@ -68,22 +69,6 @@
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nowTeacher" />
-
-        <TextView
-            android:id="@+id/nowText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:text="Now"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            android:textStyle="italic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/nowClassStartTime"

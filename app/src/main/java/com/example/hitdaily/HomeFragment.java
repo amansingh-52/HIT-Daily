@@ -1,7 +1,15 @@
 package com.example.hitdaily;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -9,13 +17,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.myapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,11 +42,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class HomeFragment extends Fragment {
@@ -42,6 +65,8 @@ public class HomeFragment extends Fragment {
     String room_no;
     String category;
     boolean nextClassCounter = true;
+    LocationManager locationManager;
+    LocationListener locationListener;
 
     @Nullable
     @Override
@@ -54,6 +79,38 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
            ProgressDialog progressDialog = new ProgressDialog(getContext());
+        locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                updateLocation(location);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},1);
+        }
+        else{
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,500000,1000,locationListener);
+            Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if(lastKnownLocation!=null){
+                updateLocation(lastKnownLocation);
+            }
+        }
            progressDialog.setMessage("Loading...");
            progressDialog.setCancelable(false);
            progressDialog.show();
@@ -108,7 +165,7 @@ public class HomeFragment extends Fragment {
                         }
                         TextView classID = (TextView) getView() . findViewById(R.id.nowclassId);
                        GenerateClassId generateClassId = new GenerateClassId(dept, section, yearString, groupString);
-                        classTextView.setText(dept + " -" + section + " \"" + groupString + "\" (" + yearString + ")");
+                        classTextView.setText("D: "+dept + "\nS: " + section + "\nG: " + groupString + "\nY:" + yearString + "");
                         long deptId = generateClassId.dept(dept);
                         long sectionId = generateClassId.section(section);
                         long yearId = generateClassId.year(yearString);
@@ -125,7 +182,6 @@ public class HomeFragment extends Fragment {
                         final TextView currentTeacher = (TextView) getView() . findViewById(R.id.nowTeacher);
                         final TextView currentRoom = (TextView) getView(). findViewById(R.id.nowRoom_no);
                         final TextView currentCategory = (TextView) getView() . findViewById(R.id.nowCategory);
-                        final TextView nowTextView = (TextView) getView() . findViewById(R.id.nowText);
                         final TextView nextText = getView() . findViewById(R.id.nextText);
                         final TextView nextTime = getView() . findViewById(R.id.nextClassStartTime);
                         final TextView nextRoom = getView() . findViewById(R.id.nextRoom_no);
@@ -148,7 +204,6 @@ public class HomeFragment extends Fragment {
                                                 currentSubject.setText("");
                                                 ConstraintLayout now = getView() .  findViewById(R.id.nowConstraint);
                                                 now.setBackgroundResource(R.drawable.sunday);
-                                                nowTextView.setText("");
                                                 nextText.setText("");
                                                 nextTime.setText("");
                                                 nextRoom.setText("");
@@ -167,7 +222,6 @@ public class HomeFragment extends Fragment {
                                                 e1.printStackTrace();
                                             }
                                             try {
-                                                nowTextView.setText("");
                                                 nextText.setText("");
                                                 nextTime.setText("");
                                                 nextRoom.setText("");
@@ -320,7 +374,7 @@ public class HomeFragment extends Fragment {
                             @Override
                             public void onTick(long millisUntilFinished) {
                                 timeLeftTextView.setText(timeLeftCalculation.timeLeft());
-                                time.setText(setTime.getWeek() + " " + setTime.generateDAndT());
+                                time.setText(setTime.getWeek_Full() + "\n" + setTime.generateDAndT());
                             }
 
                             @Override
@@ -337,6 +391,95 @@ public class HomeFragment extends Fragment {
                     }
                 });
         }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+            startListening();
+        }
+    }
+
+    void startListening(){
+        if(ContextCompat.checkSelfPermission(getContext(),Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED){
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,500000,1000,locationListener);
+        }
+    }
+
+    void updateLocation(Location location){
+            TextView city = getView().findViewById(R.id.city);
+            city.setText(Integer.toString((int) location.getLongitude())+"\t"+Integer.toString((int) location.getLatitude()));
+            Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+
+        try {
+            List<Address> addressList = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
+
+            if(addressList != null && addressList.size()>0){
+                city.setText(addressList.get(0).getLocality().toUpperCase());
+                TextView temp = getView().findViewById(R.id.temp);
+                temp.setText( addressList.get(0).getPostalCode());
+                String url;
+                double random = Math.random();
+                if(random>=0&&random<0.2) {
+                    url = "https://api.openweathermap.org/data/2.5/weather?q=" + addressList.get(0).getLocality() + "&appid=b124a801dd5ed56f829228de8658723e&units=imperial";
+                    Toast.makeText(getContext(),"API: 1",Toast.LENGTH_LONG).show();
+                }
+                else if(random>=0.2&&random<0.4) {
+                    url = "https://api.openweathermap.org/data/2.5/weather?q=" + addressList.get(0).getLocality() + "&appid=fe98b60411a7f017746d6b63c213dc79&units=imperial";
+                    Toast.makeText(getContext(),"API: 2",Toast.LENGTH_LONG).show();
+                }
+                else if(random>=0.4&&random<0.6) {
+                    url = "https://api.openweathermap.org/data/2.5/weather?q=" + addressList.get(0).getLocality() + "&appid=e113d73038717b73d9283c8ce04702eb&units=imperial";
+                    Toast.makeText(getContext(),"API: 3",Toast.LENGTH_LONG).show();
+                }
+                else if(random>=0.6&&random<0.8) {
+                    url = "https://api.openweathermap.org/data/2.5/weather?q=" + addressList.get(0).getLocality() + "&appid=df5e38bd3e4d2196175487be356fa75e&units=imperial";
+                    Toast.makeText(getContext(),"API: 4",Toast.LENGTH_LONG).show();
+                }
+                else {
+                    url = "https://api.openweathermap.org/data/2.5/weather?q=" + addressList.get(0).getLocality() + "&appid=0d945bcf7cf94527e68cc4d81671796a&units=imperial";
+                    Toast.makeText(getContext(),"API: 5",Toast.LENGTH_LONG).show();
+                }
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject jsonObject = response.getJSONObject("main");
+                            JSONArray jsonArray = response.getJSONArray("weather");
+                            JSONObject object = jsonArray.getJSONObject(0);
+                            String temperature = String.valueOf(jsonObject.getDouble("temp"));
+                            JSONObject jo = response.getJSONObject("wind");
+                            String wind = String.valueOf(jo.getDouble("speed"));
+                            double tempInC = Double.parseDouble(temperature);
+                            double centi = (tempInC -32)/1.80000;
+                            centi = Math.floor(centi);
+                            String description = object.getString("description");
+                            String city = response.getString("name");
+                            TextView cityString = getView().findViewById(R.id.city);
+                            cityString.setText(city);
+                            TextView temp = getView().findViewById(R.id.temp);
+                            temp.setText(Double.toString(centi)+" \u2103");
+                            TextView humidity = getView().findViewById(R.id.humidity);
+                            humidity.setText(description);
+                            TextView speed = getView().findViewById(R.id.wind);
+                            speed.setText(wind+" km/h");
+                        } catch (JSONException e) {
+                            Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getContext(),"API ERROR",Toast.LENGTH_LONG).show();                   }
+                });
+                RequestQueue queue = Volley.newRequestQueue(getContext());
+                queue.add(jsonObjectRequest);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     }
     class SetTime{
     String currentTime(){
@@ -360,6 +503,13 @@ public class HomeFragment extends Fragment {
         calendar.setTimeInMillis(time);
         return (formatter.format(calendar.getTime()));
     }
+        String getWeek_Full() {
+            long time = System.currentTimeMillis();
+            DateFormat formatter = new SimpleDateFormat("EEEE");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time);
+            return (formatter.format(calendar.getTime()));
+        }
     String hour(){
         long time = System.currentTimeMillis();
         DateFormat formatter = new SimpleDateFormat("HH");
@@ -375,7 +525,7 @@ public class HomeFragment extends Fragment {
         return (formatter.format(calendar.getTime()));
     }
     String generateDAndT(){
-        return (date()+"\t"+currentTime());
+        return (date()+"\n"+currentTime());
     }
 }
 class GenerateClassId {

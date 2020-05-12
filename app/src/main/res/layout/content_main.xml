@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/buttonNow"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:text="TIME"
-    app:cardCornerRadius="35dp"
-    tools:context="com.example.hitdaily.MainActivity">
+    app:cardCornerRadius="15dp"
+    tools:context="com.example.hitdaily.MainActivity"
+    app:cardElevation="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,34 +17,29 @@
 
         <TextView
             android:id="@+id/classNameText"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:layout_marginStart="5dp"
             android:alpha=".7"
             android:background="@android:color/transparent"
-            android:gravity="center"
             android:padding="15dp"
-            android:text="Class Name"
-            android:textAlignment="center"
-            android:textSize="26sp"
+            android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/timeTextView" />
 
         <TextView
             android:id="@+id/timeTextView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="15dp"
             android:alpha=".7"
             android:background="@android:color/transparent"
-            android:gravity="center"
             android:padding="10dp"
-            android:text="Time"
-            android:textAlignment="center"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

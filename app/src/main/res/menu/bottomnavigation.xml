@@ -15,8 +15,4 @@
         android:icon="@drawable/ic_assessment_black_24dp"
         android:title="Attendance Manager"/>
 
-    <item
-        android:id="@+id/profile_Bottom"
-        android:icon="@drawable/ic_account_circle_black_24dp"
-        android:title="Profile"/>
 </menu>

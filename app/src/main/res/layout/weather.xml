@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/weatherNow"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:text="TIME"
+    app:cardCornerRadius="15dp"
+    tools:context="com.example.hitdaily.MainActivity"
+    app:cardElevation="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
+
+        <ImageView
+            android:id="@+id/weatherIcon"
+            android:layout_width="95dp"
+            android:layout_height="95dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:alpha=".7"
+            android:background="@android:color/transparent"
+            android:padding="15dp"
+            android:src="@drawable/morning"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/city"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="5dp"
+            android:alpha=".7"
+            android:background="@android:color/transparent"
+            android:padding="15dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/weatherIcon" />
+
+        <TextView
+            android:id="@+id/temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:alpha=".7"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/city" />
+
+        <TextView
+            android:id="@+id/humidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:alpha=".7"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/temp" />
+
+        <TextView
+            android:id="@+id/wind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:alpha=".7"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/humidity" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

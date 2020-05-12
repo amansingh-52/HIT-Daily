@@ -27,7 +27,6 @@ import java.util.List;
 public class RoutineFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
-    SetTime setTime = new SetTime();
     String dept="Hello",section="World",yearString = "year", groupString = "group";
     @Nullable
     @Override
