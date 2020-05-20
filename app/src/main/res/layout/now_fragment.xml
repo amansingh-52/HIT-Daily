@@ -23,7 +23,7 @@
             android:id="@+id/weatherCard"
             layout="@layout/weather"
             android:layout_width="150dp"
-            android:layout_height="wrap_content"
+            android:layout_height="250dp"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="0dp"
             android:layout_marginTop="80dp"
@@ -59,7 +59,7 @@
             android:layout_marginTop="25dp"
             android:layout_marginRight="30dp"
             android:text="Information desk:"
-            android:textSize="20sp" />
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/textView7"
@@ -70,7 +70,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="30dp"
             android:text="Now:"
-            android:textSize="20sp" />
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/textView8"
@@ -81,7 +81,7 @@
             android:layout_marginTop="30dp"
             android:layout_marginRight="30dp"
             android:text="Discussion forum:"
-            android:textSize="20sp" />
+            android:textSize="20dp" />
     </RelativeLayout>
 
 </ScrollView>

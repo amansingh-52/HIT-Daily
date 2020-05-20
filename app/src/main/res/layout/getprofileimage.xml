@@ -39,7 +39,7 @@
         android:gravity="center"
         android:text="Choose your profile image"
         android:textAlignment="center"
-        android:textSize="20sp"
+        android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

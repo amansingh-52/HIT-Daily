@@ -1242,7 +1242,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 storageReference = FirebaseStorage.getInstance().getReference("profile");
                 Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(),mImageUri);
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bmp.compress(Bitmap.CompressFormat.JPEG,40,byteArrayOutputStream);
+                bmp.compress(Bitmap.CompressFormat.JPEG,10,byteArrayOutputStream);
                 byte[] byteArray = byteArrayOutputStream.toByteArray();
                 uploadInitialImage(byteArray);
             } catch (IOException e) {
