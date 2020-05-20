@@ -11,7 +11,7 @@ KEY FEATURES:
 6. Discussion forum (Class specific).
 7. Attendance Manager.
 
-<img src="img/Screenshot_2020-05-20-09-05-18-641_com.example.myapplication.jpg" width=169><img src="img/Screenshot_2020-05-20-09-05-43-619_com.example.myapplication.jpg" width=169><img src="img/Screenshot_2020-05-20-09-06-31-741_com.example.myapplication.jpg" width=169><img src="/img/Screenshot_2020-05-20-09-06-34-494_com.example.myapplication.jpg" width=169>
+<img src="img/Screenshot_2020-05-20-09-05-18-641_com.example.myapplication.jpg" width=169><img src="img/Screenshot_2020-05-20-09-05-43-619_com.example.myapplication.jpg" width=169><img src="img/Screenshot_2020-05-20-09-06-31-741_com.example.myapplication.jpg" width=169><img src="/img/Screenshot_2020-05-20-09-06-34-494_com.example.myapplication.jpg" width=169><img src="img/Screenshot_2020-05-20-09-05-48-100_com.example.myapplication.jpg" width=169>
 
 TECHNOLOGIES USED:
 
